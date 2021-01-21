@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static %}
+ {% block head %}
+    {% endblock %}
+{% block breadcrumb %}
+{% endblock %}
+{% block head_title %}Lista de Profissionais{% endblock %}
+{% block content %}
+<br>
+<div class="container">
+    <div class="col-12">
+           <div class="row bg-dark justify-content-center">
+               <div class="col-11 align-self-center">
+                    <h3 class="p-2 text-white">Lista de Profissionais inativos</h3>
+               </div>
+               <div class="col-1 align-self-center">
+                   <a href="{% url 'main:dashboard'  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                       <i class="fa fa-undo" aria-hidden="true"></i>
+                   </a>
+               </div>
+           </div>
+       </div>
+    <table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Email</th>
+      <th scope="col"><i class="fa fa-eye" aria-hidden="true"></i></th>
+      <th scope="col">Profissional</th>
+      <th scope="col">Nome</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        {% for user in professional_inactive_list %}
+
+      <th scope="row">
+          <li>
+        {% if user.professional_name.picture %}
+            <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ user.professional_name.picture }}" alt="{{ user.professional_name.picture }}">
+        {% else %}
+            {% if user.professional_name.socialaccount_set.all.0.get_avatar_url %}
+                <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ user.professional_name.socialaccount_set.all.0.get_avatar_url }}" alt="{{ user.professional_name.get_full_name }}" width="100" height="100"/>
+            {% else %}
+                <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+            {% endif %}
+        {% endif %}
+      </li></th>
+
+        <td><li>
+            <a class="btn text-dark" href="{% url 'professional:professional_detail' user.professional_name.username  %}">
+            {{ user.professional_name.email }}
+            </a>
+        </li></td>
+         <td><li>
+        <small class="text-white"><span class="badge rounded badge-dark">
+            {{ user.professional_views }}
+        </span></small>
+        </li></td>
+        <td><li>
+             {% for category in user.professional_category.all %}
+            <div class="row justify-content-center">
+                <div class="col-12">
+                {{ category.category_professional }}
+                </div>
+            </div>
+            {% endfor %}
+        </li></td>
+
+      <td>{% if user.professional_name.first_name %}{{ user.professional_name.first_name|title }} {{ user.professional_name.last_name|title }}{% else %}{{ user.professional_name.username|title }}{% endif %}</td>
+      <td class="text-center">
+          <a class="btn-sm btn-secondary" href="{% url 'professional:professional_update' user.professional_name.username  %}" style="background-color: #111111;">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </a>
+      </td>
+    </tr>
+    <ul>
+    {% empty %}
+        <li><h6>Sem profissionais inativos, vá a lista de <a class="btn bg-white text-dark" href="{% url 'professional:professional_active_list' %}">
+            <strong>profissionais ativos</strong></a> ou volte ao <a class="btn bg-white text-dark" href="{% url 'main:dashboard'  %}"><strong>dashboard.</strong></a></h6></li>
+    </ul>
+  {% endfor %}
+  </tbody>
+    </table>
+
+
+
+
+</div>
+
+{% endblock content %}
+
+{% block javascript %}
+
+{% endblock %}

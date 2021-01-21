@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+{{ wizard.form.media }}
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+{% endblock %}
+
+{% block head_title %}Novo Agendamento {{service.first.service_tittle}}{% endblock %}
+
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-10">
+      <div class="card">
+            <div class="card-header">
+                <h4>Novo Agendamento {{service.first.service_tittle}}</h4>
+                <p>Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</p>
+            </div>
+            <div class="card-body">
+                <form action="" method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                <table>
+                {{ wizard.management_form }}
+                {% if wizard.form.forms %}
+                    {{ wizard.form.management_form }}
+                    {% for form in wizard.form.forms %}
+                        {{ form|crispy }}
+                    {% endfor %}
+                {% else %}
+                {% include 'includes/form.html' %}
+                    {% endif %}
+                </table>
+
+
+                  {% if wizard.steps.prev %}
+                <button name="wizard_goto_step" type="submit" class="btn btn-secondary" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+                {% endif %}
+                <input type="submit" class="btn btn-dark float-right" value="{% trans 'submit' %}"/>
+                </form>
+            </div>
+      </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+
+var unavailableDates = {{ busy_date_list|safe }};
+
+$(function() {
+    $("#id_0-schedule_date").datepicker({
+        minDate: 0, maxDate: "+12M +1D",
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        changeYear: true,
+        defaultDate: +1,
+
+
+        beforeShowDay: function(date) {
+
+
+
+           var show = true;
+           {% for disabled_day in professional_schedule_day_off %}
+           if(date.getDay()=={{disabled_day}}) show=false
+           {% endfor %}
+
+           var string = jQuery.datepicker.formatDate('dd-mm-yy', date);
+
+           if(unavailableDates.indexOf(string) == 0) show=false
+
+           return [show];
+
+        },
+
+
+        dateFormat: 'dd/mm/yy',
+        dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],
+        dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+        dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+        monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+        monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+
+    });
+});
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block head %}
+{% endblock %}
+{% block stylesheet %}
+
+ @media (min-width: 28em) {
+        .card-columns {
+            -webkit-column-count:2;
+            -moz-column-count:2;
+            column-count:2;
+            ⋮
+        }
+        ⋮
+    }
+
+{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}
+DashBoard
+
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container mt-sm-5 mt-md-4">
+        <div class="card-columns">
+
+           <div class="card">
+              <div class="card-body">
+                  <div class="card-header mb-2">
+                      <div class="row justify-content-between">
+                            <div class="col-10">
+                                <h5><strong>Totais L`unique</strong></h5>
+                                <div class="row justify-content-between">
+                                   <div class="col-10">
+                                       <p>Avaliações</p>
+                                   </div>
+                                    <div class="col-1">
+                                        <span class="badge badge-dark">{{service_rating_average|floatformat:1}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                      </div>
+                  </div>
+                  <a class="dropdown-item" href="{% url 'custom_user:custom_user_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Usuarios</h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_users}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'professional:professional_category_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Categorias de Profissional</h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_professional_category}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+                  <a class="dropdown-item" href="{% url 'professional:professional_active_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Profissionais <span class="badge badge-dark">ativos</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_professional_active}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'professional:professional_inactive_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Profissionais <span class="badge badge-dark">inativos</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_professional_inactive}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'service:service_category_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Categorias de Serviço</h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_service_category}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'service:service_inactive_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Seviços <span class="badge badge-dark"> inativos</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_service_inactive}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+                  <a class="dropdown-item" href="{% url 'service:service_active_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Seviços <span class="badge badge-dark"> ativos</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_service_active}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+                  <a class="dropdown-item" href="{% url 'service:service_active_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Seviços ativos <span class="badge badge-danger">oferta</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{service_price_active_list}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+                  <a class="dropdown-item" href="{% url 'equipment:equipment_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Equipamentos</h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_equipment}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+                  <a class="dropdown-item" href="{% url 'bride:bride_active_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Produções <span class="badge badge-dark"> ativas</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_bride_active}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+                   <a class="dropdown-item" href="{% url 'bride:bride_inactive_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Produções <span class="badge badge-dark"> inativas</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_bride_inactive}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+                  <a class="dropdown-item" href="{% url 'combo:combo_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Pacotes <span class="badge badge-dark"> ativos</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_combo_visible}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+                   <a class="dropdown-item" href="{% url 'combo:combo_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Pacotes <span class="badge badge-dark"> inativos</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_combo_invisible}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+                  <a class="dropdown-item" href="{% url 'testimony:testimony_deleted_list' %}">
+                  <div class="row justify-content-between">
+                      <div class="col-10">
+                          <h5>Comentarios <span class="badge badge-dark"> deletados</span></h5>
+                      </div>
+                      <div class="col-2">
+                          <span class="badge badge-dark"> {{total_testimony_deleted}} </span>
+                      </div>
+                  </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+
+              </div>
+           </div>
+
+           <div class="card">
+              <div class="card-body">
+                  <div class="card-header mb-2">
+                      <h5><strong>Top <span class="badge badge-dark">5</span> serviços mais visualizados:</strong></h5>
+                  </div>
+                      {% for service_view in service_views_list %}
+                        <a class="dropdown-item" href="{% url 'service:service_detail' service_view.pk  %}">
+                        <div class="row justify-content-between">
+                                <div class="col-6">
+                                <h5>{{service_view.service_tittle}}</h5>
+                                </div>
+                                <div class="col-2">
+                                    <span class="badge badge-dark">
+                                        {{service_view.service_views}}</span>
+                                </div>
+                        </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+              </div>
+           </div>
+
+           <div class="card">
+              <div class="card-body">
+                  <div class="card-header mb-2">
+                      <h5><strong>Top <span class="badge badge-dark">5</span> serviços melhores avaliados:</strong></h5>
+                  </div>
+                      {% for service, rating in service_rating_list %}
+                        <a class="dropdown-item" href="{% url 'service:service_detail' service.pk  %}">
+                        <div class="row justify-content-between">
+                                <div class="col-6">
+                                <h5>{{service.service_tittle}}</h5>
+                                </div>
+                                <div class="col-2">
+                                    <span class="badge badge-dark">
+                                        {{rating|floatformat:1}}</span>
+                                </div>
+                        </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+              </div>
+           </div>
+
+            <div class="card">
+              <div class="card-body">
+                  <div class="card-header mb-2">
+                      <h5><strong>Top <span class="badge badge-dark">5</span> serviços mais comentados:</strong></h5>
+                  </div>
+                      {% for testimony_service, comments in testimony_service_list %}
+                        {% for pk in testimony_service %}
+                        {% if forloop.last %}
+                        <a class="dropdown-item" href="{% url 'service:service_detail' pk  %}">
+                        {% endif %}
+                        {% endfor %}
+                        <div class="row justify-content-between">
+                                <div class="col-6">
+                                {% for service in testimony_service %}
+                                {% if forloop.first %}
+                                <h5>{{service}}</h5>
+                                {% endif %}
+                                {% endfor %}
+                                </div>
+
+                                <div class="col-2">
+                                    <span class="badge badge-dark">
+                                        {{comments}}</span>
+                                </div>
+                        </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+              </div>
+           </div>
+           <div class="card">
+              <div class="card-body">
+                  <div class="card-header mb-2">
+                      <h5><strong>Top <span class="badge badge-dark">5</span> produções mais visualizadas:</strong></h5>
+                  </div>
+                      {% for bride_views in bride_views_list %}
+                        <a class="dropdown-item" href="{% url 'bride:bride_detail' bride_views.pk  %}">
+                        <div class="row justify-content-between">
+                                <div class="col-6">
+                                <h5>{{bride_views.bride_name}}</h5>
+                                </div>
+                                <div class="col-2">
+                                    <span class="badge badge-dark">
+                                        {{bride_views.bride_views}}</span>
+                                </div>
+                        </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+              </div>
+           </div>
+
+           <div class="card">
+              <div class="card-body">
+                  <div class="card-header mb-2">
+                      <h5><strong>Top <span class="badge badge-dark">5</span> fotos mais visualizadas:</strong></h5>
+                  </div>
+                      {% for photo_views in photo_views_list %}
+                        {% if photo_views %}
+                        <a class="dropdown-item" href="{% url 'testimony:testimony_photo_detail' photo_views.testimony_photo.first.testimony_photo.service_photo.pk photo_views.pk photo_views.testimony_photo.first.pk %}">
+                        <div class="row justify-content-between">
+                             <div class="col-4">
+                              <img src="{{MEDIA_URL}}{{photo_views.service_photo_file}}" class="card-img mb-1" alt="lunique_{{photo_views.service_photo_file.name}}">
+                             </div>
+
+                              <div class="col-1">
+                                    <span class="badge badge-dark">
+                                        {{photo_views.photo_views}}
+                                    </span>
+                              </div>
+                        </div>
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+                        {% endif %}
+                      {% endfor %}
+              </div>
+           </div>
+
+            <div class="card">
+              <div class="card-body">
+                  <div class="card-header mb-2">
+                      <h5><strong>Top <span class="badge badge-dark">5</span> fotos mais comentadas:</strong></h5>
+                  </div>
+                      {% for photo, testimony in testimony_photo_list %}
+                        <a class="dropdown-item" href="{% url 'testimony:testimony_photo_detail' photo.testimony_photo.first.testimony_photo.service_photo.pk photo.pk photo.testimony_photo.first.pk %}">
+                        <div class="row justify-content-between">
+                             <div class="col-4">
+                              <img src="{{MEDIA_URL}}{{photo.service_photo_file}}" class="card-img mb-1" alt="lunique_{{photo.service_photo_file.name}}">
+                             </div>
+
+                              <div class="col-1">
+                                    <span class="badge badge-dark">
+                                        {{testimony}}
+                                    </span>
+                              </div>
+                        </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+              </div>
+           </div>
+
+        </div>
+</div>
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

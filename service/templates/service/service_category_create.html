@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_title %}Nova categoria de serviço{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="row justify-content-center">
+  <div class="col-lg-8 col-md-8 col-sm-10">
+    <div class="card">
+        <div class="card-header">
+            <h5>Nova categoria de serviço</h5>
+        </div>
+      <div class="card-body text-dark">
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+          {% include 'includes/form.html' %}
+
+
+                <a href="{% url 'professional:professional_category_create' %}" class="btn ins-ic p-1 btn-secondary" title="Adicione uma nova categoria de profissional!" data-toggle="tooltip" data-placement="right">
+                    <div class="col">
+                         <i class="fa fa-plus fa-1x" aria-hidden="true"></i>
+                         Categoria de Profissional
+                    </div>
+                </a>
+          <div class="row mr-1 justify-content-end">
+            <button type="submit" class="btn btn-dark">Salvar</button>
+          </div>
+        </form>
+      </div>
+      </div>
+    </div>
+</div>
+<br>
+{% endblock %}

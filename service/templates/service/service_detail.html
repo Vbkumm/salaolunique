@@ -1,0 +1,402 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block head_title %}{{ service.service_tittle|slice:":35" }}{% endblock %}
+{% block head %}
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ service.service_tittle }}">
+<meta property="og:description" content="{{ service.get_description_as_markdown }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="L'unique Espaço de Beleza">
+<meta property=og:image content="{% for service_photo in service.service_photo.all %}
+                    {% if service_photo.photo_visible is True %}
+                        {% with testimony=service_photo.testimony_photo.first %}
+                            {% if testimony.testimony_active %}
+                                    <img class='img-thumbnail' src='{{MEDIA_URL}}{{ service_photo.service_photo_file }}' alt='lunique_{{ service_photo.service_photo_file.name }}'>
+
+                            {% endif %}
+                        {% endwith %}
+                    {% endif %}
+                {% endfor %}">
+<meta property="og:locale" content="pt_BR" />
+
+{% endblock %}
+{% block stylesheet %}
+{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block content %}
+<br><br>
+<!--==========================
+    Prime Service Card
+  ============================-->
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-8 text-left">
+                    <a href="{% url 'service:service_list' service.service_category.pk  %}" class="btn">
+                        <h5 class="text-dark">{{ service.service_category.category_service }}</h5>
+                    </a>
+                </div>
+                <div class="col-4 text-right">
+                {% if request.user.is_staff %}
+                    <a href="{% url 'service:service_update' service.pk  %}" class="btn-sm ml-1 pr-1 text-white btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Editar informações serviço">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </a>
+                    <a href="{% url 'service:service_delete' service.pk  %}" class="btn-sm ml-1 pr-1 text-white btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Deletar serviço">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                    <a href="{% url 'photo:service_photo_create' service.pk  %}" class="btn-sm ml-1 pr-1 text-white btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Adicionar foto ao serviço">
+                      <i class="fa fa-camera" aria-hidden="true"></i>
+                    </a>
+                    {% if service_equipment_list %}
+                    <a href="{% url 'service:equipment_service_list' service.pk  %}" class="btn-sm ml-1 pr-1 text-white btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="lista de equipamento para realizar o serviço">
+                    {% else %}
+                    <a href="{% url 'service:equipment_service_create' service.pk  %}" class="btn-sm ml-1 pr-1 text-white btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Adicionar equipamento ao serviço">
+                    {% endif %}
+                      <i class="fa fa-scissors" aria-hidden="true"></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'service:schedule_wizard_create' service.pk  %}" class="btn text-white bg-danger" style="background-color: #111111;">
+                                 Agende aqui!
+                    </a>
+
+                {% endif %}
+                    <a href="{% url 'service:service_list' service.service_category.pk  %}" class="btn-sm ml-1 text-white btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Voltar para {{ service.service_category.category_service }}">
+                      <i class="fa fa-undo" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="row bg-dark py-4 justify-content-between text-white">
+                <div class="col-7 col-md-6 align-self-center">
+                    <h3 class="bg-dark text-white">Serviço - {{ service.service_tittle }}
+                    {% if request.user.is_staff %}
+                    <small class="text-white"><span class="badge rounded badge-light">
+                        <i class="fa fa-eye" aria-hidden="true"></i>{{service.service_views}}
+                    </span></small>
+                    {% endif %}
+                    </h3>
+                </div>
+
+                {% for price in service.price_service.all %}
+                <div class="col-5 col-md-6">
+                    <div class="row justify-content-around no-gutters">
+                        <div class="col-9">
+                            <div class="row justify-content-around no-gutters">
+                                <div class="col-md-5 ">
+                                {% if price.price_value <= price.old_price_value %}
+                                     <h4><span class="badge rounded badge-danger"><strong>Promoção</strong></span></h4>
+                                {% endif %}
+                                </div>
+                                {% if request.user.is_staff %}
+                                <a href="{% url 'price:price_service_update' price.price_service.pk price.pk %}" class="btn btn-dark"  data-toggle="tooltip" data-placement="bottom" title="Editar preço">
+                                {% endif %}
+                                    <div class="col-md-5 ml-4 text-white">
+                                    {% if price.price_active is True %}
+                                        <div class="row align-items-center">
+                                                {% if service.service_customer_time  is True %}
+                                                <small>a partir de</small>
+                                                {% endif %}
+                                        </div>
+                                         <div class="row align-items-center">
+                                                <h6 class="text-white"><small>R<i class="fa fa-usd" aria-hidden="true"></i></small> {{ price.price_value }}</h6>
+                                        </div>
+                                    {% else %}
+                                        {% if request.user.is_staff %}
+                                            {% if price.price_value is null %}
+                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                                <i class="fa fa-usd" aria-hidden="true"></i>
+                                            {% else %}
+                                                <i class="fa fa-usd" aria-hidden="true"></i>
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                    </div>
+                                {% if request.user.is_staff %}
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-2 align-self-top">
+                            <div class="dropdown">
+                              <button type="button" class="btn btn-sm bg-dark text-white" data-toggle="dropdown" data-placement="bottom" title="Compartilhar nas rede sociais">
+                                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-right text-center">
+                                  <div class="row ml-1 align-items-center">
+                                      <div class="col-3 align-self-center">
+                                        <a class="btn text-dark" href="http://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target=_blank data-toggle="tooltip" data-placement="bottom" title="Compartilhar pacote no facebook">
+                                            <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                                        </a>
+                                      </div>
+                                      <div class="col-3 align-self-center">
+                                        <a class="btn text-dark" href="whatsapp://send?text={{ request.build_absolute_uri }}" data-action="share/whatsapp/share" target=_blank data-toggle="tooltip" data-placement="bottom" title="Compartilhar pacote no whatsapp">
+                                            <i class="fa fa-whatsapp" aria-hidden="true"></i>
+                                        </a>
+                                      </div>
+                                      <div class="col-3 pl-1 align-self-center" data-toggle="tooltip" data-placement="bottom" title="Copiar link para área de transferência">
+                                        <button class="dropdown-item btn copy">
+                                            <i class="fa fa-clipboard" aria-hidden="true"></i>
+                                        </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-10 col-md-9 p-3">
+                    <div class="row my-3 mx-5">
+                    <p class="text-justify">{{ service.get_description_as_markdown }}</p>
+
+                  {% if equipment_exact_time  is True %}
+                        <p> O tempo estimado de execução desse serviço pode variar de acordo com procedimento desejado. Seu tempo minimo estimado é de {{ service_equipment_total_time }}.</p>
+                  {% else %}
+                        <p> O tempo estimado de execução é de {{ service_equipment_total_time }}.</p>
+                  {% endif %}
+                </div>
+                </div>
+            {% if professional_list %}
+                <div class="col-lg-2 col-md-3 border rounded bg-light">
+                    <div class="row p-2 justify-content-center">
+                        <h6 class="text-dark text-left">Profissionais que realizam esse serviço:</h6>
+                    </div>
+                    <ul class="navbar-nav">
+                    <div class="row justify-content-center row-cols-1 row-cols-md-2">
+                    {% for professional in professional_list %}
+                    <div class="col-md-10 col-sm-4 p-1 text-center">
+                            <li class="nav-item">
+                              <a class="btn btn-sm text-dark border-0" href="{% url 'professional:professional_detail' professional.professional_name.username %}">
+                                  <div class="row justify-content-center">
+                                      {% if professional.professional_name.picture %}
+                                        <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ professional.professional_name.picture }}" alt="{{ professional.professional_name.picture }}">
+                                      {% else %}
+                                        {% if professional.professional_name.socialaccount_set.all.0.get_avatar_url %}
+                                            <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ professional.professional_name.socialaccount_set.all.0.get_avatar_url }}" alt="{{ professional.professional_name.get_full_name }}" width="100" height="100"/>
+                                        {% else %}
+                                            <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+                                        {% endif %}
+                                      {% endif %}
+                                  </div>
+                                  <div class="row text-dark justify-content-center">{% if professional.professional_name.first_name %} {{ professional.professional_name.first_name }}{% else %}{{ professional.professional_name.username }}{% endif %}</div>
+                                    {% for category in professional.professional_category.all %}
+                                <div class="row justify-content-center text-muted" style="font-size:75%">{{ category.category_professional }}</div>
+                                {% endfor %}
+                              </a>
+                            </li>
+                    </div>
+                    {% endfor %}
+                    </div>
+                    </ul>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+
+
+        <div class="card-footer">
+            <div class="row">
+                {% for service_photo in service.service_photo.all %}
+                    {% if service_photo.photo_visible is True %}
+                        {% with testimony=service_photo.testimony_photo.first %}
+                            {% if testimony.testimony_active %}
+                                <a href="{% url 'testimony:testimony_photo_detail' service_photo.service_photo.pk  service_photo.pk testimony.pk %}" class="text-dark">
+                                <div class="card" style="width: 7rem;">
+                                    <img class="card-img w-100" src="{{MEDIA_URL}}{{ service_photo.service_photo_file }}" alt="lunique_{{ service_photo.service_photo_file.name }}">
+                                     {% if request.user.is_staff %}
+                                    <div class="card-img-overlay d-flex align-items-end flex-column">
+                                        <small class="text-white mt-auto"><span class="badge badge-light">
+                                            <i class="fa fa-eye" aria-hidden="true"></i> {{testimony.testimony_photo.photo_views}}
+                                        </span></small>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- #end prime card  -->
+<!--==========================
+    Costumer reviews
+  ============================-->
+
+
+        <div class="row m-2 justify-content-end">
+         <a href="{% url 'testimony:testimony_service_wizard_create' service.pk  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+             Deixe seu comentario!  <i class="fa fa-comment" aria-hidden="true"></i>
+         </a>
+        </div>
+    {% for testimony_service in testimony_list.all %}
+        {% if testimony_service.get_testimony_user%}
+          <div class="card mt-2">
+                <div class="card-header border-0">
+                    <div class="row">
+                        <div class="col-6 text-left">
+                            <p class="card-text text-warning">
+                            {% if testimony_service.testimony_rating == 1 %}
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            {% endif %}
+                            {% if testimony.testimony_rating == 2 %}
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            {% endif %}
+                            {% if testimony_service.testimony_rating == 3 %}
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            {% endif %}
+                            {% if testimony_service.testimony_rating == 4 %}
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            {% endif %}
+                            {% if testimony_service.testimony_rating == 5 %}
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-6 text-right">
+                            <small class="text-muted">
+                             há {{ testimony_service.testimony_published|timesince  }}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-8 align-self-start">
+                        <small class="muted">by,</small>
+                        <a class="btn text-dark border-0" href="{% url 'custom_user:user_detail' testimony_service.testimony_user.username %}">
+                            <div class="row justify-content-center">
+                                {% if testimony_service.testimony_user.picture %}
+                                <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ testimony_service.testimony_user.picture }}" alt="{{ testimony_service.testimony_user.picture }}">
+                                {% else %}
+                                    {% if testimony_service.testimony_user.socialaccount_set.all.0.get_avatar_url %}
+                                    <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ testimony_service.testimony_user.socialaccount_set.all.0.get_avatar_url }}" alt="{{ testimony_service.testimony_user.get_full_name }}" width="100" height="100"/>
+                                    {% else %}
+                                    <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </a>
+                        <a class="btn btn-sm text-dark border-0" href="{% url 'profile' testimony_service.testimony_user.username %}">
+                            {% if testimony_service.testimony_user.first_name %} {{ testimony_service.testimony_user.first_name }} {{ testimony_service.testimony_user.last_name }}{% else %}{{ testimony_service.testimony_user.username }}{% endif %}
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-10 col-md-9 p-3">
+                            <h5><i class="fa fa-quote-left" aria-hidden="true"></i> {{ testimony_service.testimony_title }} {% if testimony_service.testimony_description %}</h5>
+                           <p>{{ testimony_service.get_description_as_markdown }}{% endif %} <i class="fa fa-quote-right" aria-hidden="true"></i>{% if testimony_service.testimony_description %}</p>{% else %}</h5>{% endif %}
+                        </div>
+                        {% if testimony_service.testimony_professional.all %}
+                            <div class="col-lg-2 col-md-3 border rounded bg-light">
+                                <div class="row p-2 justify-content-center">
+                                    <h6 class="text-dark text-left">Profissionais que realizaram o serviço:</h6>
+                                </div>
+                                <ul class="navbar-nav">
+                                <div class="row justify-content-center row-cols-1 row-cols-md-2">
+                                {% for professional in testimony_service.testimony_professional.all %}
+                                    {% if professional.professional_active is True %}
+                                    <div class="col-md-10 col-sm-4 p-1 text-center">
+                                            <li class="nav-item">
+                                              <a class="btn btn-sm text-dark border-0" href="{% url 'professional:professional_detail' professional.professional_name.username %}">
+                                                  <div class="row justify-content-center">
+                                                      {% if professional.professional_name.picture %}
+                                                        <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ professional.professional_name.picture }}" alt="{{ professional.professional_name.picture }}">
+                                                      {% else %}
+                                                        {% if professional.professional_name.socialaccount_set.all.0.get_avatar_url %}
+                                                            <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ professional.professional_name.socialaccount_set.all.0.get_avatar_url }}" alt="{{ professional.professional_name.get_full_name }}" width="100" height="100"/>
+                                                        {% else %}
+                                                        <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+                                                    {% endif %}
+                                                  {% endif %}
+                                                    </div>
+                                              <div class="row text-dark justify-content-center">{% if professional.professional_name.first_name %} {{ professional.professional_name.first_name }}{% else %}{{ professional.professional_name.username }}{% endif %}</div>
+                                                   {% for category in professional.professional_category.all %}
+                                                    <div class="row justify-content-center text-muted" style="font-size:75%">{{ category.category_professional }}</div>
+                                                    {% endfor %}
+                                          </a>
+                                        </li>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                </div>
+                                </ul>
+                            </div>
+                            {% endif %}
+                    </div>
+
+                    {% if testimony_service.testimony_user == user %}
+                        <div class="row justify-content-end">
+                          <div class="dropdown dropup">
+                              <button type="button" class="btn bg-white text-dark" data-toggle="dropdown" data-placement="bottom" title="Copiar editar deletar">
+                                  <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-right text-center">
+                                    <button class="dropdown-item btn copy">
+                                        <i class="fa fa-clipboard" aria-hidden="true"></i> copiar link
+                                    </button>
+                                    <a class="dropdown-item p-1" href="{% url 'testimony:testimony_update' testimony_service.pk  %}">
+                                        <i class="fa fa-edit" aria-hidden="true"></i> editar
+                                    </a>
+                                    <a class="dropdown-item p-1" href="{% url 'testimony:testimony_service_delete' testimony_service.pk  %}">
+                                        <i class="fa fa-trash" aria-hidden="true"></i> deletar
+                                    </a>
+                              </div>
+                          </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+          </div>
+        {% endif %}
+    {% endfor %}
+</div>
+ <!-- #end costumer reviews  -->
+
+{% endblock %}
+{% block javascript %}
+<script>
+
+   var copyCode = new ClipboardJS('.copy', {
+       text: function(trigger) {
+           return document.location.href;
+       }
+   });
+
+    copyCode.on('success', function(event) {
+        event.clearSelection()
+        alert ("Link copiado para área de transferência");
+
+    });
+
+
+</script>
+
+
+<script language="javascript">
+    function fbshareCurrentPage()
+    {window.open("https://www.facebook.com/sharer/sharer.php?u="+escape(window.location.href)+"&t="+document.title, '',
+    'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+    return false; }
+</script>
+
+{% endblock %}
+
+

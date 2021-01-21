@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+ {% block head %}
+    {% endblock %}
+{% block breadcrumb %}
+{% endblock %}
+{% block head_title %}Lista de comentarios de deletados{% endblock %}
+{% block content %}
+<br>
+<div class="container">
+    <div class="col-12">
+           <div class="row bg-dark justify-content-center">
+               <div class="col-11 align-self-center">
+                    <h5 class="p-2 pt-3 text-white">Lista de Comentarios de Deletados</h5>
+               </div>
+               <div class="col-1 align-self-center">
+                   <a href="{% url 'main:dashboard'  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                       <i class="fa fa-undo" aria-hidden="true"></i>
+                   </a>
+               </div>
+           </div>
+       </div>
+    <table class="table">
+  <thead class="thead-dark">
+    <tr>
+        <th scope="col"></th>
+      <th scope="col">Titulo</th>
+      <th scope="col">Usuario</th>
+      <th scope="col">Data deletada</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        {% for testimony_deleted in testimony_deleted_list %}
+        <td></td>
+        <td><li><a href="{% url 'testimony:testimony_deleted_detail' testimony_deleted.pk  %}" class="text-dark">
+            {{ testimony_deleted.testimony_deleted_title }}</a></li></td>
+        <td><li>{{ testimony_deleted.testimony_deleted_user }}</li></td>
+        <td><li>{{ testimony_deleted.testimony_deleted_date }}</li></td>
+
+
+
+    </tr>
+    <ul>
+    {% empty %}
+        <li><h6>Sem comentarios deletados.</h6></li>
+    </ul>
+  {% endfor %}
+  </tbody>
+    </table>
+
+
+
+
+</div>
+
+{% endblock content %}
+
+{% block javascript %}
+
+{% endblock %}

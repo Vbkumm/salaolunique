@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_title %}Fotos {{ service.service_tittle }}{% endblock %}
+
+{% block stylesheet %}
+
+{% endblock %}
+
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br>
+
+    <div class="col-12 mt-md-4 mt-sm-5">
+        <div class="card-head bg-dark text-white">
+            <div class="row justify-content-between">
+          <div class="col-8">
+              <a href="{% url 'service:service_detail' service.pk %}" class="btn">
+              <h3 class="bg-dark p-2 text-decoration text-white">Fotos do serviço {{ service.service_tittle }}</h3>
+              </a>
+          </div>
+          <div class="col-2">
+              <a href="{% url 'service:service_detail' service.pk %}" class="btn text-white" data-toggle="tooltip" data-placement="bottom" title="Voltar para {{ service.service_tittle }}">
+              <i class="fa fa-undo" aria-hidden="true"></i>
+              </a>
+          </div>
+            </div>
+
+
+        </div>
+
+
+
+     {# 1. BUTTON TO TRIGGER THE ACTION #}
+
+        {% if user.is_authenticated and service.service_author == user %}
+          <div class="well bg-light text-muted text-center" style="padding-top: 4rem; padding-bottom: 4rem;">
+              <span class="glyphicon glyphicon-arrow-down" style="font-size: 4rem;"></span>
+              <button type="button" class="btn bg-light text-muted js-upload-photos">
+                <i class="fa fa-2x fa-cloud-upload" aria-hidden="true"></i>
+              </button>
+              <h3>Arraste aqui suas fotos ou
+              <button type="button" class="btn btn-secondary js-upload-photos">
+                <strong>clique para selecionar-las</strong>
+              </button>
+              </h3>
+          </div>
+
+     {# 2. FILE INPUT TO BE USED BY THE PLUG-IN #}
+          <input id="fileupload" type="file" name="service_photo_file" multiple
+                 style="display: none;"
+                 data-url="{% url 'photo:service_photo_create' service.pk %}"
+                 data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+
+     {# 3. TABLE TO DISPLAY THE UPLOADED PHOTOS #}
+          <table id="gallery" class="table text-dark table-bordered">
+
+       {% endif %}
+             <tbody>
+              {% for service_photo in service_photo_list reversed %}
+                <tr>
+                  <td>
+                    {% if service_photo.service_photo_file %}
+                      <a href="{{ service_photo.service_photo_file.url }}" class="img">
+                      <img class="col-2 col-md-1" src="{{MEDIA_URL}}{{ service_photo.service_photo_file }}" alt="lunique_{{ service_photo.service_photo_file.name }}"/>
+                      </a>
+                    {% endif %}
+
+
+                    <a href="{{ service_photo.service_photo_file.url }}" class="text-dark">
+                        {{ service_photo.filename }}
+                    </a>
+
+                    {% if user.is_authenticated and service.service_author == user %}
+                        <div class="col-1.5 float-right">
+
+                            <a href="{% url 'photo:service_photo_delete' service_photo.service_photo.pk service_photo.pk %}" class="btn-sm ml-1 btn-dark" data-toggle="tooltip" data-placement="bottom" title="Deletar foto">
+                                  <i class="fa fa-trash" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="col-1.5 float-right">
+
+                          {% if service_photo.testimony_photo.all %}
+                            {% with testimony=service_photo.testimony_photo.first %}
+                                {% if testimony.testimony_active %}
+                                  <a href="{% url 'testimony:testimony_photo_update' service_photo.service_photo.pk  service_photo.pk testimony.pk %}" class="btn-sm text-success btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Editar comentario foto ou ocultar foto">
+                                      <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                  </a>
+
+                                {% else %}
+                                  <a href="{% url 'testimony:testimony_photo_update' service_photo.service_photo.pk  service_photo.pk testimony.pk %}" class="btn-sm text-danger btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Editar comentario foto ativar foto">
+                                      <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                  </a>
+                                {% endif %}
+                            {% endwith %}
+
+                          {% else %}
+                                 <a href="{% url 'testimony:testimony_photo_create' service_photo.service_photo.pk service_photo.pk  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Ativar foto">
+                                      <i class="fa fa-comment" aria-hidden="true"></i>
+                                </a>
+                          {% endif %}
+
+                        </div>
+
+                      {% if service_photo.photo_visible is False %}
+                            <div class="col-2 float-right">
+                                  <a href="{% url 'photo:service_photo_cover_update' service_photo.service_photo.pk service_photo.pk %}" class="btn text-white" data-toggle="tooltip" data-placement="bottom" title="Alterar data de expiração">
+                                       <small class="text-danger">expirada</small>
+                                  </a>
+                            </div>
+                      {% else %}
+                        {% if service_photo.service_photo_cover %}
+                          <div class="col-2 float-right">
+                                  <a href="{% url 'photo:service_photo_cover_update' service_photo.service_photo.pk service_photo.pk %}" class="btn text-success" data-toggle="tooltip" data-placement="bottom" title="Desmarcar como foto destaque e ou colocar data de expiração">
+                                       <i class="fa fa-check" aria-hidden="true"></i>
+                                  </a>
+                            </div>
+
+                          {% else %}
+                            <div class="col-2 float-right">
+                                  <a href="{% url 'photo:service_photo_cover_update' service_photo.service_photo.pk service_photo.pk %}" class="btn text-dark" data-toggle="tooltip" data-placement="bottom" title="Marcar como foto destaque  e ou colocar data de expiração">
+                                      <i class="fa fa-circle-o" aria-hidden="true"></i>
+                                  </a>
+                            </div>
+
+                          {% endif %}
+                      {% endif %}
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+             </tbody>
+           </table>
+      </div>
+
+      <div class="modal fade" id="modal-progress" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog">
+            <div class="modal-content text-dark">
+              <div class="modal-header">
+                <h4 class="modal-title">Carregando fotos...</h4>
+              </div>
+              <div class="modal-body">
+                <div class="progress">
+                  <div class="progress-bar bg-dark" role="progressbar" style="width: 0%;">0%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+
+
+
+
+
+
+{% endblock %}
+
+{% block javascript %}
+  {# JQUERY FILE UPLOAD SCRIPTS #}
+  <script src="{% static 'js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/load-image.all.min.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/canvas-to-blob.min.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload-process.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload-image.js' %}"></script>
+
+  {# PHOTOS PAGE SCRIPTS #}
+  <script src="{% static 'js/basic-upload.js' %}"></script>
+
+  <script type="text/javascript">
+  $('#fileupload').fileupload({
+      url: '//jquery-file-upload.appspot.com/',
+      dataType: 'json',
+      // Enable image resizing, except for Android and Opera,
+      // which actually support image resizing, but fail to
+      // send Blob objects via XHR requests:
+      disableImageResize: /Android(?!.*Chrome)|Opera/
+          .test(window.navigator && navigator.userAgent),
+      imageMaxWidth: 800,
+      imageMaxHeight: 800,
+      imageCrop: true // Force cropped images
+
+
+  })
+
+  </script>
+
+
+{% endblock %}

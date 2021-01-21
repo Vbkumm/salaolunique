@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css">
+{{ wizard.form.media }}
+{% endblock %}
+
+{% block head_title %}Cadastro de nova produção{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-10">
+      <div class="card">
+        <div class="card-body text-dark">
+            <div class="card-header">
+                    <h4>Nova produção</h4>
+                    <p>Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</p>
+                </div>
+                <div class="card-body">
+                    <form action="" method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                    <table>
+                    {{ wizard.management_form }}
+                    {% if wizard.form.forms %}
+                        {{ wizard.form.management_form }}
+                        {% for form in wizard.form.forms %}
+                            {{ form|crispy }}
+                        {% endfor %}
+                    {% else %}
+                    {% include 'includes/form.html' %}
+                        {% endif %}
+                    </table>
+
+                      {% if wizard.steps.prev %}
+                    <button name="wizard_goto_step" type="submit" class="btn btn-secondary" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+                    {% endif %}
+                    <input type="submit" class="btn btn-dark float-right" value="{% trans 'submit' %}"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+$(function() {
+    $("#id_1-bride_party_date").datepicker({
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],
+        dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+        dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+        monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+        monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+
+    });
+});
+</script>
+{% endblock %}

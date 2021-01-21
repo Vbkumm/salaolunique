@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block head %}
+{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}
+
+{{ user_profile.name }}
+
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-10">
+      <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-4">
+                     <div class="row justify-content-center">
+                         {% if user_profile.picture %}
+                         <img class="img rounded-circle" style="width: 8rem; height: 8rem" src="{{MEDIA_URL}}{{ user_profile.picture }}" alt="{{ user_profile.picture }}">
+                         {% else %}
+                         {% if user_profile.socialaccount_set.all.0.get_avatar_url %}
+                         <img class="img rounded-circle" style="width: 8rem; height: 8rem" src="{{ user_profile.socialaccount_set.all.0.get_avatar_url }}" alt="{{ user_profile.get_full_name }}" width="100" height="100"/>
+                         {% else %}
+                         <i class="fa fa-4x fa-user-circle-o" aria-hidden="true"></i>
+                         {% endif %}
+                         {% endif %}
+                     </div>
+                </div>
+                <div class="col-8">
+                    <div class="row text-dark">
+                        {% if user_profile.first_name %}
+                        <h3 class="text-left">
+                        {{ user_profile.first_name|title }} {{ user_profile.last_name|title }}
+                        {% else %}
+                        {{ user_profile.username|title }}
+                        {% endif %}
+                        </h3>
+                    </div>
+                    {% if user_profile.about %}
+                    <div class="row text-dark">
+                        <p class="text-left">{{ user_profile.about }}</p>
+                    </div>
+                    {% endif %}
+                    {% if user_profile == user %}
+                    <div class="row mt-2 justify-content-between">
+                        <div class="col-6">
+                            <a class="btn-sm btn-dark border-0" href="{% url 'profile' user.username %}" style="background-color: #000000;">
+                                <i class="fa fa-edit" aria-hidden="true"></i> editar perfil
+                            </a>
+                        </div>
+                        <div class="col-2">
+                            <form class="form-inline">
+                                <a href="{% url 'account_logout' %}" class="btn-sm text-dark" data-toggle="tooltip" data-placement="bottom" title="Sair">
+                                    <i class="fa fa-2x fa-sign-out" aria-hidden="true"></i>
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if user_profile.is_professional is True %}
+                        {% if user_profile.professional_custom_user.professional_active is True %}
+                            <div class="row justify-content-end">
+                                 <a class="btn-sm btn-dark border-0" href="{% url 'professional:professional_detail' user_profile.username %}" style="background-color: #000000;">
+                                    <div class="col-12 pt-2 align-self-center">
+                                       <h6>
+                                        <i class="fa fa-scissors" aria-hidden="true"></i>
+                                        ver meu perfil profissional
+                                       </h6>
+                                    </div>
+                                 </a>
+                            </div>
+                        {% else %}
+                            {% if user_profile == user %}
+                                <div class="row justify-content-end">
+                                 <a class="btn-sm btn-dark border-0" href="{% url 'professional:professional_detail' user_profile.username %}" style="background-color: #000000;">
+                                    <div class="col-12 pt-2 align-self-center">
+                                       <h6>
+                                        <i class="fa fa-scissors" aria-hidden="true"></i>
+                                        ver meu perfil profissional
+                                       </h6>
+                                    </div>
+                                 </a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+          <div class="card-body">
+              {% if user_schedule_list_future %}
+              {% if user_profile == user or request.user.is_staff %}
+
+              <div class="row m-2">
+                  <h4>Meus Agendamentos:</h4>
+              </div>
+              <div class="row">
+                  {% for user_schedule, time in user_schedule_list_future%}
+                  <div class="card">
+                  <div class="col-12 m-1">
+
+                      <p>Data: {{user_schedule.schedule_date}}</p>
+                      <p>Horário: {{user_schedule.schedule_hour}}</p>
+                      <p>Tempo de Serviço: {{time}}</p>
+                      <p>Serviço: {{user_schedule.schedule_service.service_tittle}}</p>
+
+                      Profissional:
+                      <div class="col mt-2">
+                        <div class="card border-0">
+                            <a class="btn btn-sm px-4 text-dark border-0" href="{% url 'professional:professional_detail' user_schedule.schedule_professional.professional_name.username %}">
+                                <div class="row">
+                                <div class="col-4 justify-content-center">
+                                    {% if user_schedule.schedule_professional.professional_name.picture %}
+                                        <img class="img rounded-circle" style="width: 4rem; height: 4rem" src="{{MEDIA_URL}}{{ user_schedule.schedule_professional.professional_name.picture }}" alt="{{ user_schedule.schedule_professional.professional_name.picture }}">
+                                    {% else %}
+                                        {% if user_schedule.schedule_professional.professional_name.socialaccount_set.all.0.get_avatar_url %}
+                                            <img class="img rounded-circle" style="width: 4rem; height: 4rem" src="{{ user_schedule.schedule_professional.professional_name.socialaccount_set.all.0.get_avatar_url }}" alt="{{ user_schedule.schedule_professional.professional_name.get_full_name }}" width="100" height="100"/>
+                                        {% else %}
+                                            <i class="fa fa-3x fa-user-circle-o" aria-hidden="true"></i>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div class="col-8">
+                                <div class="row justify-content-center">{% if user_schedule.schedule_professional.professional_name.first_name %} {{ user_schedule.schedule_professional.professional_name.first_name|title }} {{ user_schedule.schedule_professional.professional_name.last_name|title }}{% else %}{{ user_schedule.schedule_professional.professional_name.username|title }}{% endif %}</div>
+                                {% for category in user_schedule.schedule_professional.professional_category.all %}
+                                <div class="row justify-content-center text-muted" style="font-size:75%">{{ category.category_professional }}</div>
+                                </div>
+                                </div>
+                                {% endfor %}
+                            </a>
+                        </div>
+                      </div>
+                  </div>
+                  </div>
+                  {% endfor %}
+              </div>
+              {% endif %}
+              {% endif %}
+
+                {% if photos_bookmark %}
+              <div class="row m-2">
+                  <h4>{% if user_profile == user %}Fotos marcadas como suas {% else %}Minhas fotos {% endif %}favoritas:</h4>
+              </div>
+              <div class="row">
+                  {% for photo in photos_bookmark%}
+                  {% with testimony=photo.testimony_photo.first %}
+                  <div class="col-2 m-1">
+                    <a href="{% url 'testimony:testimony_photo_detail' photo.service_photo.pk  photo.pk testimony.pk %}" class="text-dark">
+                        <div class="card" style="width: 7rem;">
+                            <img class="card-img w-100" src="{{MEDIA_URL}}{{ photo.service_photo_file }}" alt="lunique_{{ photo.service_photo_file.name }}">
+                        </div>
+                    </a>
+                  </div>
+                  {% endwith %}
+                  {% endfor %}
+              </div>
+              {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

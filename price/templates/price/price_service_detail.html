@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+
+{% block head %}
+{% endblock %}
+
+
+{% block stylesheet %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}Valor: {{ price.service.service_tittle }}{% endblock %}
+
+{% block content %}
+<br>
+<div class="container-fluid mt-1">
+
+
+  <div class="d-md-flex px-sm-3">
+      <div class="col-md-3 text-danger">
+          <h1>Valor: {{ price.service.service_tittle }}</h1>
+
+      </div>
+  </div>
+</div>
+
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

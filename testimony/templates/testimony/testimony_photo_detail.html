@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block head %}
+{% for service in service %}
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ service.service_tittle }}">
+<meta property="og:description" content="{{ service.get_description_as_markdown }}">
+{% endfor %}
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="L'unique Espaço de Beleza">
+
+<meta property=og:image content="{% for photo in service_photo %}
+                                    <img class='img-thumbnail' src='{{MEDIA_URL}}{{ photo.service_photo_file }}' alt='lunique_{{ photo.service_photo_file.name }}'>
+                {% endfor %}">
+<meta property="og:locale" content="pt_BR" />
+
+{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}
+{% for service in service %}
+{{ service.service_tittle|slice:":35"  }}
+{% endfor %}
+{% endblock %}
+{% block content %}
+<br>
+<div class="conteiner mt-md-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-9 col-sm-10">
+        {% for service in service %}
+            <div class="row px-3 px-md-0 pr-5 pr-sm-0 py-2 justify-content-between text-white" style="background-color: #111111;">
+                <div class="col-8 col-sm-10 pt-3 align-self-center">
+                    <div class="row">
+                        <div class="col-11 align-self-center">
+                            <a href="{% url 'service:service_detail' service.pk %}" class="card-title text-white" data-toggle="tooltip" data-placement="bottom" title="Voltar para {{ service.service_tittle }}">
+                            <h3 class="m-0"> Serviço - {{ service.service_tittle }}</h3>
+                            </a>
+                        </div>
+                            {% if request.user.is_staff %}
+                        <div class="col-1 align-self-center">
+                            <small class="text-white"><span class="badge badge-dark">
+                                <i class="fa fa-eye" aria-hidden="true"></i> {{photo_views}}
+                            </span></small>
+                        </div>
+                            {% endif %}
+                    </div>
+                </div>
+                <div class="col-3 col-sm-2 mr-2 mr-sm-0 pt-0 pt-sm-2 align-self-center">
+                    <div class="row no-gutters justify-content-end">
+                        <a href="{% url 'service:service_detail' service.pk %}" class="card-title text-white" data-toggle="tooltip" data-placement="bottom" title="Voltar para {{ service.service_tittle }}">
+                        <div class="col-2 col-sm-3 mt-3 align-self-center">
+                            <i class="fa fa-undo" aria-hidden="true"></i>
+                        </div>
+                        </a>
+                        <div class="col-2 col-sm-3 mt-1 align-self-center">
+
+                             {% for photo in service_photo %}
+                            {% if photo in request.user.photo_bookmark.all %}
+                                <form method='post' action="{% url 'testimony:user_photo_bookmark_add' photo.service_photo.pk photo.pk %}">
+                                     {% csrf_token %}
+                                     <input type='hidden' name='photo_bookmark' value={{photo.pk}}>
+                                     <button type='submit' class="btn btn-sm text-success" style="background-color: #111111;" data-placement="bottom" title="Tirar de suas fotos favoritas">
+                                         <i class="fa fa-bookmark" aria-hidden="true"></i>
+                                     </button>
+                                    </form>
+                            {% else %}
+                                   <form method='post' action="{% url 'testimony:user_photo_bookmark_add' photo.service_photo.pk photo.pk %}">
+                                     {% csrf_token %}
+                                     <input type='hidden' name='photo_bookmark' value={{photo.pk}}>
+                                     <button type='submit' class="btn btn-sm text-white" style="background-color: #111111;" data-placement="bottom" title="Salvar em suas fotos favoritas">
+                                         <i class="fa fa-bookmark-o" aria-hidden="true"></i>
+                                     </button>
+                                    </form>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="col-2 col-sm-3 mt-1 align-self-center">
+                            <div class="dropdown">
+                              <button type="button" class="btn btn-sm text-white" data-toggle="dropdown" data-placement="bottom" title="Compartilhar nas rede sociais" style="background-color: #111111;">
+                                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-right text-center">
+                                  <div class="row ml-1 align-items-center">
+                                      <div class="col-3 align-self-center">
+                                        <a class="btn text-dark" href="http://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target=_blank data-toggle="tooltip" data-placement="bottom" title="Compartilhar pacote no facebook">
+                                            <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                                        </a>
+                                      </div>
+                                      <div class="col-3 align-self-center">
+                                        <a class="btn text-dark" href="whatsapp://send?text={{ request.build_absolute_uri }}" data-action="share/whatsapp/share" target=_blank data-toggle="tooltip" data-placement="bottom" title="Compartilhar pacote no whatsapp">
+                                            <i class="fa fa-whatsapp" aria-hidden="true"></i>
+                                        </a>
+                                      </div>
+                                      <div class="col-3 pl-1 align-self-center" data-toggle="tooltip" data-placement="bottom" title="Copiar link para área de transferência">
+                                        <button class="dropdown-item btn copy">
+                                            <i class="fa fa-clipboard" aria-hidden="true"></i>
+                                        </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+        {% for photo in service_photo %}
+        <div class="row pt-2 align-items-center" style="background-color: #111111;">
+            <img class="img-fluid text-center" style="display: block; margin: auto;" src="{{MEDIA_URL}}{{ photo.service_photo_file }}" alt="lunique_{{ photo.service_photo_file }}">
+        </div>
+        {% endfor %}
+            <div class="row justify-content-center" style="background-color: #111111;">
+            {% with testimony=testimony_list.first %}
+                {% if testimony.testimony_description %}
+                <div class="col-12 text-white text-center p-2">
+                    <h6 class="my-4">
+                    <i class="fa mr-2 fa-quote-left" aria-hidden="true"></i>
+                        {{ testimony.testimony_description }}
+                    <i class="fa ml-2 fa-quote-right" aria-hidden="true"></i>
+                    </h6>
+                </div>
+                {% endif %}
+            </div>
+            {% if testimony.testimony_professional.all %}
+            <div class="row pb-2 justify-content-center" style="background-color: #111111;">
+                <div class="col-10 m-1 rounded" style="background-color: #111111;">
+                    <div class="row">
+                        <div class="col-4 p-2 justify-content-start">
+                            <h6 class="text-white text-left">Profissionais nesta foto:</h6>
+                        </div>
+                        <div class="col-8">
+                            <ul class="navbar-nav">
+                            <div class="row align-items-start">
+                                {% for professional in testimony.testimony_professional.all %}
+                                <div class="col-flow p-1 m-2 text-center">
+                                        <li class="nav-item">
+                                          <a class="btn btn-sm text-dark border-0" href="{% url 'professional:professional_detail' professional.professional_name.username %}">
+                                              <div class="row justify-content-center">
+                                                  {% if professional.professional_name.picture %}
+                                                    <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ professional.professional_name.picture }}" alt="{{ professional.professional_name.picture }}">
+                                                  {% else %}
+                                                    {% if professional.professional_name.socialaccount_set.all.0.get_avatar_url %}
+                                                        <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ professional.professional_name.socialaccount_set.all.0.get_avatar_url }}" alt="{{ professional.professional_name.get_full_name }}" width="100" height="100"/>
+                                                    {% else %}
+                                                        <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+                                                    {% endif %}
+                                                  {% endif %}
+                                              </div>
+                                              <div class="row text-white justify-content-center">
+
+                                                  {% if professional.professional_name.first_name %} {{ professional.professional_name.first_name }}{% else %}{{ professional.professional_name.username }}{% endif %}
+
+                                              </div>
+                                              {% for category in professional.professional_category.all %}
+                                                <div class="row justify-content-center text-muted" style="font-size:75%">{{ category.category_professional }}</div>
+                                                {% endfor %}
+                                          </a>
+                                        </li>
+                                </div>
+                                {% endfor %}
+
+                            </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if request.user.is_staff %}
+            <div class="row justify-content-end" style="background-color: #111111;">
+                 {% if testimony.testimony_user.username %}
+                     <ul class="navbar-nav mb-2 text-secondary ml-auto">
+                         <li class="nav-item">
+                             <a class="btn btn-sm text-secondary border-0" href="{% url 'profile' testimony.testimony_user.username %}">
+                                 {% if testimony.testimony_user.picture %}
+                                 <img class="img rounded-circle" style="width: 1.5rem; height: 1.5rem" src="{{MEDIA_URL}}{{ testimony.testimony_user.picture }}" alt="lunique_{{ testimony.testimony_user.picture }}">
+                                 {% else %}
+                                    {% if testimony.testimony_user.socialaccount_set.all.0.get_avatar_url %}
+                                    <img class="img rounded-circle" style="width: 1.5rem; height: 1.5rem" src="{{ testimony.testimony_user.socialaccount_set.all.0.get_avatar_url }}" alt="{{ testimony.testimony_user.get_full_name }}" width="100" height="100"/>
+                                    {% else %}
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                    {% endif %}
+                                 {% endif %}
+                                 {% if testimony.testimony_user.first_name %} {{ testimony.testimony_user.first_name|title }} {{ testimony.testimony_user.last_name|title }}{% else %}{{ testimony.testimony_user.username|title }}{% endif %}
+                             </a>
+                         </li>
+                     </ul>
+                  {% endif %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            {% for photo in service_photo %}
+            <div class="row mt-2">
+                <div class="col-12">
+                                <form method='post' action="{% url 'testimony:user_photo_comment_add' photo.service_photo.pk photo.pk %}">
+                                     {% csrf_token %}
+                                    <div class="form-group mt-3">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <label for="id_testimony_description"><h4>Deixe seu comentario!</h4></label>
+                                            </div>
+                                            <div class="col-12">
+                                                <textarea class="form-control" maxlength="1000" rows="3" id="id_testimony_description" name='testimony_description'>{{testimony_description}}</textarea>
+                                            </div>
+                                            <div class="col-12">
+                                                <input type='submit' class="btn float-right m-2 text-white" style="background-color: #111111;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+                </div>
+            </div>
+          {% endfor %}
+
+
+
+
+
+        {% for testimony in testimony_list reversed %}
+        {% if forloop.last %}
+          {% else %}
+          <div class="row mx-3 mx-md-0 mt-2">
+            <div class="card-body bg-light">
+                <div class="row pt-3 justify-content-center">
+                    <h6 class="m-5">
+                    <i class="fa mr-2 fa-quote-left" aria-hidden="true"></i>
+                        {{ testimony.testimony_description }}
+                    <i class="fa ml-2 fa-quote-right" aria-hidden="true"></i>
+                    </h6>
+                </div>
+                <div class="row justify-content-end">
+                     {% if testimony.testimony_user.username %}
+                         <ul class="navbar-nav mb-2 text-secondary ml-auto">
+                             <li class="nav-item">
+                                 <a class="btn btn-sm text-secondary border-0" href="{% url 'profile' testimony.testimony_user.username %}">
+                                     {% if testimony.testimony_user.picture %}
+                                     <img class="img rounded-circle" style="width: 1.5rem; height: 1.5rem" src="{{MEDIA_URL}}{{ testimony.testimony_user.picture }}" alt="lunique_{{ testimony.testimony_user.picture }}">
+                                     {% else %}
+                                        {% if testimony.testimony_user.socialaccount_set.all.0.get_avatar_url %}
+                                        <img class="img rounded-circle" style="width: 1.5rem; height: 1.5rem" src="{{ testimony.testimony_user.socialaccount_set.all.0.get_avatar_url }}" alt="{{ testimony.testimony_user.get_full_name }}" width="100" height="100"/>
+                                        {% else %}
+                                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                        {% endif %}
+                                     {% endif %}
+                                     {% if testimony.testimony_user.first_name %} {{ testimony.testimony_user.first_name|title }} {{ testimony.testimony_user.last_name|title }}{% else %}{{ testimony.testimony_user.username|title }}{% endif %}
+                                 </a>
+                             </li>
+                         </ul>
+                      {% endif %}
+                </div>
+                      {% if testimony.testimony_user == user %}
+                      <div class="row justify-content-end">
+                                  <div class="dropdown dropup">
+                                      <button type="button" class="btn bg-white text-dark" data-toggle="dropdown">
+                                          <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                      </button>
+                                      <div class="dropdown-menu dropdown-menu-right text-center">
+                                       <a href="{% url 'testimony:testimony_photo_comment_update' testimony.testimony_photo.service_photo.pk  testimony.testimony_photo.pk testimony.pk  %}" class="dropdown-item p-1">
+                                          <i class="fa fa-pencil-square-o" aria-hidden="true"></i> editar
+                                       </a>
+                                      <a href="{% url 'testimony:testimony_photo_comment_delete' testimony.testimony_photo.service_photo.pk  testimony.testimony_photo.pk testimony.pk  %}" class="dropdown-item p-1">
+                                          <i class="fa fa-trash" aria-hidden="true"></i> deletar
+                                      </a>
+                                      </div>
+                                  </div>
+                      </div>
+                      {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+
+   var copyCode = new ClipboardJS('.copy', {
+       text: function(trigger) {
+           return document.location.href;
+       }
+   });
+
+    copyCode.on('success', function(event) {
+        event.clearSelection()
+        alert ("Link copiado para área de transferência");
+
+    });
+
+
+</script>
+
+
+<script language="javascript">
+    function fbshareCurrentPage()
+    {window.open("https://www.facebook.com/sharer/sharer.php?u="+escape(window.location.href)+"&t="+document.title, '',
+    'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+    return false; }
+
+
+    function maxLength(el) {
+        if (!('maxLength' in el)) {
+            var max = el.attributes.maxLength.value;
+            el.onkeypress = function () {
+                if (this.value.length >= max) return false;
+            };
+        }
+    }
+
+    maxLength(document.getElementById("testimony_description"));
+
+</script>
+
+
+{% endblock %}
+

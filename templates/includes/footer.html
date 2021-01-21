@@ -1,0 +1,99 @@
+{% load static %}
+
+
+{% if request.get_full_path == "/" %}
+
+    <div class="row pt-1 justify-content-center" style="background-color: #000000;">
+      <!-- Grid column -->
+      <div class="col-md-6 col-lg-6 align-self-center">
+        <div class="row justify-content-center">
+          <img class="d-block" src="{% static 'img/logo.jpeg' %}" alt="salaolunique">
+        </div>
+      </div>
+
+      <!-- Grid column -->
+        <div class="col-md-6 col-lg-6 align-self-center">
+          <div class="row text-white justify-content-center">
+              <div class="col text-center m-sm-2 m-md-2 p-sm-4 p-md-4 ">
+                Endereço: Rua Alves de Brito, 346 - Loja 2 - Centro - Florianópolis - SC - Cep 88015-440 - Brasil.
+              <a class="btn text-white" href="tel:04832094022"><i class="fa fa-phone" aria-hidden="true"></i> (48) 3209.4022 </a>
+               <a class="btn text-white" href="tel:048991625914"><i class="fa fa-whatsapp" aria-hidden="true"></i> (48) 99162.5914</a>
+                  <p class="card-text"><small class="text-muted"><i class="fa fa-clock-o" aria-hidden="true"></i> Segunda a Sábado: 9h às 19h - Domingo: Fechado</small></p>
+              </div>
+          </div>
+        </div>
+      <!-- Grid column -->
+      <div class="col-md-6 col-lg-6 align-self-center" id="contato">
+        <ul class="fa-ul">
+          <div class="row justify-content-center">
+                <!--whatup-->
+              <div class="col mr-1 pr-1">
+                <li>
+                  <a class="ins-ic fa-2x" href="https://api.whatsapp.com/send?phone=+5548991625914&text= Olá, gostaria de fazer um agendamento!'" target=_blank style="color:#ffffff">
+                  <i class="fa fa-whatsapp" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </div>
+               <!--fone-->
+              <div class="col mr-1 pr-1">
+                <li>
+                  <a class="ins-ic fa-2x" href="tel:04832094022" style="color:#ffffff">
+                  <i class="fa fa-phone" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </div>
+                <!--Instagram-->
+              <div class="col mr-1 pr-1">
+                <li>
+                  <a class="ins-ic fa-2x" href="http://instagram.com/espacolunique" target=_blank style="color:#ffffff">
+                    <i class="fa fa-instagram" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </div>
+                <!--Facebook-->
+              <div class="col mr-1 pr-1">
+                <li>
+                  <a class="ins-ic fa-2x"
+                     href="https://www.facebook.com/pages/Lunique-Espaço-de-Beleza/237246039643081" target=_blank style="color:#ffffff">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </div>
+               <!--map-->
+              <div class="col mr-1 pr-1">
+                <li>
+                  <a class="ins-ic fa-2x" href="https://www.google.com/maps/dir//L'unique+Espaço+de+Beleza+-+Loja+2+346,+R.+Alves+de+Brito+-+Centro,+Florianópolis+-+SC,+88015-440/@-27.5877226,-48.5482463,17z/data=!4m16!1m6!3m5!1s0x952738164e91ccad:0x98f9478560ba5d37!2sL'unique+Espaço+de+Beleza!8m2!3d-27.5877226!4d-48.5460576!4m8!1m0!1m5!1m1!1s0x952738164e91ccad:0x98f9478560ba5d37!2m2!1d-48.5460576!2d-27.5877226!3e2" style="color:#ffffff" target=_blank>
+                    <i class="fa fa-map" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </div>
+
+          </div>
+        </ul>
+      </div>
+      <!-- Grid column -->
+    </div>
+{% else %}
+<div>
+  <div class="row p-1">
+  </div>
+</div>
+{% endif %}
+      <!-- Grid row-->
+<!-- Footer -->
+<footer class="footer mt-auto py-3" style="background-color: #000000;">
+
+
+
+  <!-- Footer Text -->
+
+  <!-- Copyright -->
+
+  <div class="footer-copyright text-white text-center py-2">
+    © 2020 Copyright: L`unique Espaço de Beleza
+  </div>
+
+  <!-- Copyright -->
+
+</footer>
+<!-- Footer -->

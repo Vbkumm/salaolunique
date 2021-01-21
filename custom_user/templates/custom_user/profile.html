@@ -1,0 +1,69 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load account socialaccount %}
+{% block head_title %}{% trans "Profile" %}{% endblock %}
+
+{% block content %}
+<br><br>
+ <div class="row justify-content-center">
+    <div class="col-lg-4 col-md-6 col-sm-8">
+      <div class="card">
+          <div class="card-header text-right">
+              <div class="row justify-content-between">
+                  <div class="col-9 mt-1 text-left align-self-center">
+                    <h4> Suas Informações:</h4>
+                  </div>
+              <div class="col-3 align-self-center">
+                  <a href="{% url 'custom_user:user_detail' user.username  %}" class="btn-sm ml-1 text-white btn-secondary" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Voltar para {{ service.service_category.category_service }}">
+                      <i class="fa fa-undo" aria-hidden="true"></i>
+                  </a>
+              </div>
+              </div>
+          </div>
+        <div class="card-body text-dark">
+            <form class="profile" action="." method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include 'includes/form.html' %}
+                <input class="btn-dark py-2 rounded w-100" type="submit" value="Salvar" />
+            </form>
+        </div>
+          <div class="card-footer">
+              <a class="btn-sm btn-dark float-right border-0" href="{% url 'account_change_password' %}" style="background-color: #000000;">
+                  <i class="fa fa-edit" aria-hidden="true"></i> Alterar senha
+              </a>
+          </div>
+      </div>
+    </div>
+ </div>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+  {# JQUERY FILE UPLOAD SCRIPTS #}
+  <script src="{% static 'js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/load-image.all.min.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/canvas-to-blob.min.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload-process.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload-image.js' %}"></script>
+
+  {# PHOTOS PAGE SCRIPTS #}
+  <script src="{% static 'js/basic-upload.js' %}"></script>
+
+  <script type="text/javascript">
+  $('#id_picture').fileupload({
+      disableImageResize: /Android(?!.*Chrome)|Opera/
+          .test(window.navigator && navigator.userAgent),
+      imageMaxWidth: 400,
+      imageMaxHeight: 400,
+      imageCrop: true // Force cropped images
+  })
+
+  </script>
+
+
+{% endblock %}

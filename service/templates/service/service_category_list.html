@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+ {% block head %}
+    {% endblock %}
+{% block breadcrumb %}
+{% endblock %}
+{% block head_title %}Lista de Categorias de Serviços{% endblock %}
+{% block content %}
+<br>
+<div class="container">
+    <div class="col-12">
+           <div class="row bg-dark justify-content-center">
+               <div class="col-10 align-self-center">
+                    <h5 class="p-2 text-white">Lista de Categorias de Serviços</h5>
+               </div>
+               <div class="col-2 align-self-center">
+                   <a href="{% url 'service:dashboard_service_category_create' %}" class="btn-sm pr-1 mr-1 btn-secondary" title="Adicione uma nova categoria de serviço!" data-toggle="tooltip" data-placement="right">
+                       <i class="fa fa-plus fa-1x" aria-hidden="true"></i>
+                   </a>
+                   <a href="{% url 'main:dashboard'  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                       <i class="fa fa-undo" aria-hidden="true"></i>
+                   </a>
+               </div>
+           </div>
+       </div>
+    <table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Categoria</th>
+      <th scope="col">Categoria de Profissional</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        {% for service_category in service_category_list %}
+
+        <td><li>{{ service_category.category_service }}</li></td>
+        <td><li>{{ service_category.professional_category.category_professional }}</li></td>
+
+      <td class="text-right">
+          <a href="{% url 'service:service_category_update' service_category.pk  %}" class="btn-sm pr-1 text-white btn-secondary" style="background-color: #111111;">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </a>
+
+          <a href="{% url 'service:service_category_delete' service_category.pk  %}" class="btn-sm ml-1 text-white btn-secondary" style="background-color: #111111;">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+          </a>
+      </td>
+    </tr>
+    <ul>
+    {% empty %}
+        <li><h6>Sem categorias de serviço adicione um <a class="btn bg-white text-dark" href="{% url 'service:dashboard_service_category_create' %}"><strong>nova categoria.</strong></a></h6></li>
+    </ul>
+  {% endfor %}
+  </tbody>
+    </table>
+
+
+
+
+</div>
+
+{% endblock content %}
+
+{% block javascript %}
+
+{% endblock %}

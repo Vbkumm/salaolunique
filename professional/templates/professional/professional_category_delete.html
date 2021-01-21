@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Deletar {{ object.category_professional }}!{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-4 col-md-6 col-sm-8">
+      <div class="card">
+        <div class="card-body text-dark">
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="row m-2 justify-content-center">
+              <p>Você quer mesmo deletar:</p> <p>"{{ object.category_professional }}"?</p>
+            </div>
+            <div class="row justify-content-center">
+              <a href="{% url 'professional:professional_category_list' %}" class="btn btn-secondary mx-2" >Cancelar</a>
+              <button type="submit" class="btn btn-dark ">Confirmar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+{% endblock %}

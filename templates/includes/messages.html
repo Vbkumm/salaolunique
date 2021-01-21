@@ -1,0 +1,21 @@
+{% block stylesheet %}
+{% endblock %}
+
+{% if messages %}
+<div class="row mt-5 pt-5 mr-md-5 fixed-top justify-content-end" style="position: flex" aria-atomic="true">
+        <ul class="messages">
+            {% for message in messages %}
+            <div {% if message.tags %} {% if message.tags == 'success' %} class="alert alert-dark alert-dismissible fade show" {% else %} class="alert alert-{{ message.tags }} alert-dismissible fade show" {% endif %} id="myAlert"{% endif %} data-dismiss="alert" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">&times;</button>
+                {{ message }}
+            {% endfor %}
+            </div>
+        </ul>
+</div>
+{% endif %}
+
+
+{% block javascript %}
+
+
+    {% endblock %}

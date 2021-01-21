@@ -1,0 +1,40 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+{% block head_title %}{% trans "Convida" %}{% endblock %}
+
+{% block content %}
+<br>
+  <div class="row justify-content-center">
+    <div class="col-lg-4 col-md-6 col-sm-8">
+      <div class="card">
+        <div class="card-body text-dark">
+          <h3>{% trans "Faça parte!" %}</h3>
+
+
+          <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {% include 'includes/form.html' %}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+
+            <button class="primaryAction btn-dark py-2 rounded w-100" type="submit">{% trans "Entrar" %}</button>
+          </form>
+          <div class="align-middle text-center">
+            Nossos <a href="{% url 'terms' %}" style="color: #2a363a;"><strong>Termos</strong></a> e <a href="{% url 'cookies' %}" style="color: #2a363a;">Política de Cookies.</a> </div>
+          </div>
+
+        <div class="card-footer text-muted text-center">
+          Já tenho cadastro? <a class="text-dark" href="{{ login_url }}">Entrar</a>
+        </div>
+      </div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+{% endblock %}

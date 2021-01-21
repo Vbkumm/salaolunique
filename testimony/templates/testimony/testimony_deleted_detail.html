@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block head %}
+{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}
+
+
+              {{ testimony_deleted.testimony_deleted_title }}
+
+
+{% endblock %}
+
+{% block content %}
+<br xmlns="http://www.w3.org/1999/html">
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-10">
+      <div class="card">
+          <div class="row justify-content-end">
+              <div class="col-1 m-2 text-right">
+                  <a href="{% url 'testimony:testimony_deleted_list'  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                               <i class="fa fa-undo" aria-hidden="true"></i>
+                  </a>
+              </div>
+          </div>
+            <div class="card-body">
+              <h5> Titulo: {{ testimony_deleted.testimony_deleted_title }}</h5>
+               <h6>Descrição: </h6><p>{{ testimony_deleted.testimony_deleted_description }}</p>
+
+
+              {% if testimony_deleted.testimony_deleted_rating %}
+                <p class="card-text text-warning">
+                    {% if testimony_deleted.testimony_deleted_rating == 1 %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                    {% if testimony_deleted.testimony_deleted_rating == 2 %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                    {% if testimony_deleted.testimony_deleted_rating == 3 %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                    {% if testimony_deleted.testimony_deleted_rating == 4 %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                    {% if testimony_deleted.testimony_deleted_rating == 5 %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                </p>
+          {% endif %}
+
+
+
+
+              <h6>Deletado por:</h6>
+               {% if testimony_deleted.testimony_deleted_user.username %}
+
+              <div class="col-2">
+                   <ul class="navbar-nav mr-2 ml-auto">
+                              <li class="nav-item">
+                              <a class="btn btn-sm px-4 text-dark border-0" href="{% url 'profile' testimony_deleted.testimony_deleted_user.username %}">
+                                  <div class="row justify-content-center">
+                                      {% if testimony_deleted.testimony_deleted_user.picture %}
+                                        <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ testimony_deleted.testimony_deleted_user.picture }}" alt="{{ testimony_deleted.testimony_deleted_user.picture }}">
+                                      {% else %}
+                                        {% if testimony.testimony_user.socialaccount_set.all.0.get_avatar_url %}
+                                            <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ testimony_deleted.testimony_deleted_user.socialaccount_set.all.0.get_avatar_url }}" alt="{{ testimony_deleted.testimony_deleted_user.get_full_name }}" width="100" height="100"/>
+                                        {% else %}
+                                            <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+                                        {% endif %}
+                                      {% endif %}
+                                  </div>
+                                  <div class="row justify-content-center">{% if testimony_deleted.testimony_deleted_user.first_name %} {{ testimony_deleted.testimony_deleted_user.first_name }} {{ testimony_deleted.testimony_deleted_user.last_name }}{% else %}{{ testimony_deleted.testimony_deleted_user.username }}{% endif %}</div>
+                              </a>
+                              </li>
+                          </ul>
+                  </div>
+
+               {% endif %}
+                <p>Há: {{ testimony_deleted.testimony_deleted_date|timesince }}</p>
+          </div>
+      </div>
+
+        </div>
+  </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

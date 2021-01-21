@@ -1,0 +1,32 @@
+
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Sair" %}{% endblock %}
+
+{% block content %}
+
+  <div class="row justify-content-center">
+    <div class="col-lg-4 col-md-6 col-sm-8">
+      <div class="card">
+        <div class="card-body text-dark">
+
+            <h1>{% trans "Sair" %}</h1>
+
+            <p>{% trans 'Você tem certeza que quer sair?' %}</p>
+
+            <form method="post" action="{% url 'account_logout' %}">
+              {% csrf_token %}
+              {% if redirect_field_value %}
+              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+              {% endif %}
+              <button class="btn-dark px-2" type="submit">{% trans 'Sair' %}</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

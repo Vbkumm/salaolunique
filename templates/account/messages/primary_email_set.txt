@@ -1,0 +1,6 @@
+
+{% load i18n %}
+{% blocktrans %}
+Endereço de e-mail principal configurado.
+Primary e-mail address set.
+{% endblocktrans %}

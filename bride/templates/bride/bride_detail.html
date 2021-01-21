@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block head_title %}{{ bride.bride_name }}{% endblock %}
+{% block head %}
+{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block content %}
+<br><br>
+<!--==========================
+    Prime Bride Card
+  ============================-->
+<div class="container">
+    <div class="card">
+        <div class="card-header border-0">
+
+            <div class="row p-2 bg-dark justify-content-between text-white">
+                <div class="col-7 align-self-center">
+                    <h3 class="bg-dark text-white">
+                        {% if bride.bride_category == '1' %}
+                        Noiva
+                        {% endif %}
+                        {% if bride.bride_category == '2' %}
+                        Formanda
+                        {% endif %}
+                        {% if bride.bride_category == '3' %}
+                        Debutante
+                        {% endif %}
+                        {% if bride.bride_category == '4' %}
+                        Independente
+                        {% endif %}
+                        {{ bride.bride_name }}</h3>
+                </div>
+                <div class="col-2.5 align-self-center">
+                    <small class="text-muted">{{ bride.bride_party_date }}</small>
+                </div>
+
+                <div class="col-2.5 text-right align-self-center">
+                    {% if request.user.is_staff %}
+                    <small class="text-white"><span class="badge rounded badge-light">
+                        <i class="fa fa-eye" aria-hidden="true"></i> {{bride.bride_views}}
+                    </span></small>
+                    <a href="{% url 'bride:bride_update' bride.pk  %}" class="btn-sm ml-1 pr-1 text-white mt-2" style="background-color: #111111;">
+                       <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                   </a>
+                    <a href="{% url 'bride:bride_delete' bride.pk  %}" class="btn-sm ml-1 pr-1 text-white mt-2" style="background-color: #111111;">
+                       <i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                    {% endif %}
+                    <a href="/" class="btn-sm ml-1 text-white btn-secondary" style="background-color: #111111;">
+                       <i class="fa fa-undo" aria-hidden="true"></i>
+                   </a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card-body">
+
+
+            <div class="row">
+            {% for testimony in bride.testimony_bride.all %}
+            {% if forloop.counter == 1 %}
+             <div class="col-10 p-3">
+                {{ testimony.get_description_as_markdown }}
+                {% if request.user.is_staff %}
+                <a href="{% url 'testimony:testimony_bride_update' bride.pk testimony.pk %}" class="btn-sm text-white mt-2" style="background-color: #111111;">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </a>
+                {% endif %}
+             </div>
+
+
+
+            {% if testimony.testimony_professional.all %}
+            <div class="col-lg-2 col-md-2 border rounded bg-light">
+                <div class="row p-2 text-left">
+                    <h6>Produção:</h6>
+                </div>
+                <ul class="navbar-nav">
+                    <div class="row justify-content-center row-cols-1 row-cols-md-2">
+                        {% for professional in testimony.testimony_professional.all %}
+                        <div class="col-md-10 col-sm-4 p-1 text-center">
+                                <li class="nav-item">
+                                    <a class="btn btn-sm text-dark border-0" href="{% url 'professional:professional_detail' professional.professional_name.username %}">
+                                        <div class="row justify-content-center">
+                                            {% if professional.professional_name.picture %}
+                                            <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ professional.professional_name.picture }}" alt="{{ professional.professional_name.picture }}">
+                                            {% else %}
+                                                {% if professional.professional_name.socialaccount_set.all.0.get_avatar_url %}
+                                                <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ professional.professional_name.socialaccount_set.all.0.get_avatar_url }}" alt="{{ professional.professional_name.get_full_name }}" width="100" height="100"/>
+                                                {% else %}
+                                                <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+                                                {% endif %}
+                                            {% endif %}
+                                          </div>
+                                        <div class="row justify-content-center">{% if professional.professional_name.first_name %} {{ professional.professional_name.first_name }}{% else %}{{ professional.professional_name.username }}{% endif %}</div>
+                                        <div class="row justify-content-center text-muted" style="font-size:75%">{{ professional.professional_category.category_professional }}</div>
+                                    </a>
+                                </li>
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                </ul>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+
+
+
+        <div class="card-footer">
+        <div class="row">
+        {% for testimony in bride.testimony_bride.all %}
+
+                    {% if testimony.testimony_photo.photo_visible is True %}
+                                <a href="{% url 'testimony:testimony_photo_detail' testimony.testimony_photo.service_photo.pk  testimony.testimony_photo.pk testimony.pk %}" class="text-dark">
+                                <div class="card" style="width: 7rem;">
+                                    <img class="card-img w-100" src="{{MEDIA_URL}}{{ testimony.testimony_photo.service_photo_file }}" alt="lunique_{{ testimony.testimony_photo.service_photo_file.name }}">
+                                    {% if request.user.is_staff %}
+                                    <div class="card-img-overlay d-flex align-items-end flex-column">
+                                        <small class="text-white mt-auto"><span class="badge badge-light">
+                                            <i class="fa fa-eye" aria-hidden="true"></i> {{testimony.testimony_photo.photo_views}}
+                                        </span></small>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                </a>
+                    {% endif %}
+
+        {% endfor %}
+        </div>
+        </div>
+
+
+
+
+
+
+    </div>
+</div>
+    <!-- #end prime bride  -->
+
+{% endblock %}
+{% block javascript %}
+{% endblock %}

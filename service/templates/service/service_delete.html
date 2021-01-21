@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Deletar {{ object.service_tittle }}!{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-4 col-md-6 col-sm-8">
+      <div class="card">
+        <div class="card-body text-dark">
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="row m-2 justify-content-center">
+              <p>Você quer mesmo deletar "{{ object.service_tittle }}"?</p>
+            </div>
+            <div class="row m-2 justify-content-center no-gutters">
+              <p>Lembrando que você pode desativar "{{ object.service_tittle }}" basta ir em configurções de serviço ou
+                <a href="{% url 'service:service_update' object.pk  %}" class="btn-sm ml-1 pr-1 text-danger" data-toggle="tooltip" data-placement="bottom" title="Editar informações serviço">
+                  clique aqui!
+                </a>
+              </p>
+            </div>
+            <div class="row justify-content-center">
+              <a href="/" class="btn btn-secondary mx-2" >Cancelar</a>
+              <button type="submit" class="btn btn-dark ">Confirmar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+{% endblock %}

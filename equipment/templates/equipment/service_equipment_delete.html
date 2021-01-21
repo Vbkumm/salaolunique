@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Retirar {{ object.equipment_title }} do serviço {{ object.equipment_service.equipment_tittle }}.{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-4 col-md-6 col-sm-8">
+      <div class="card">
+        <div class="card-body text-dark">
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="row m-2 justify-content-center">
+              <p>Você quer mesmo retirar</p> <p>"{{ object.equipment_tittle.equipment_tittle }}" do serviço {{ object.equipment_service.service_tittle }}?</p>
+            </div>
+            <div class="row justify-content-center">
+              <a href="{% url 'service:equipment_service_list' object.equipment_service.pk %}" class="btn btn-secondary mx-2" >Cancelar</a>
+              <button type="submit" class="btn btn-dark ">Confirmar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+{% endblock %}

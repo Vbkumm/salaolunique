@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_title %}Editar - {{ service_photo.testimony_photo.filename }}{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-10">
+      <div class="card">
+        <div class="card-body text-dark">
+          <h6>Editar comentario para:</h6>
+          <img class="card-img-top w-25 rounded" src="{{MEDIA_URL}}{{service_photo.testimony_photo.service_photo_file}}" alt="lunique_{{ service_photo.testimony_photo.service_photo_file.name }}">
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {% include 'includes/form.html' %}
+            <div class="row mr-1 justify-content-end">
+              <button type="submit" class="btn btn-dark">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+<br>
+{% endblock %}

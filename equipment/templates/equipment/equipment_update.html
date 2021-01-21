@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+{% endblock %}
+
+{% block head_title %}Editar - {{ equipment.equipment_tittle }}{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-10">
+      <div class="card">
+        <div class="card-header">
+          <h6>Editar - {{ equipment.equipment_tittle }}</h6>
+        </div>
+        <div class="card-body text-dark">
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {% include 'includes/form.html' %}
+            <div class="row mr-1 justify-content-end">
+              <a href="{% url 'equipment:equipment_list' %}" class="btn btn-secondary mx-2" >Cancelar</a>
+              <button type="submit" class="btn btn-dark">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+<br>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

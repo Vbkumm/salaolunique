@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+ {% block head %}
+    {% endblock %}
+{% block breadcrumb %}
+{% endblock %}
+{% block head_title %}Lista de Produções de Ativas{% endblock %}
+{% block content %}
+<br>
+<div class="container">
+    <div class="col-12">
+           <div class="row bg-dark justify-content-center">
+               <div class="col-11 align-self-center">
+                    <h5 class="p-2 text-white">Lista de Produções de Ativas</h5>
+               </div>
+               <div class="col-1 align-self-center">
+                   <a href="{% url 'main:dashboard'  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                       <i class="fa fa-undo" aria-hidden="true"></i>
+                   </a>
+               </div>
+           </div>
+       </div>
+    <table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Produção</th>
+      <th scope="col">Categoria de Produção</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        {% for bride_active in bride_active_list %}
+
+        <td><li>{{ bride_active.bride_name }}</li></td>
+        {% if bride_active.bride_category == '1' %}
+        <td><li>Noiva</li></td>
+        {% endif %}
+        {% if bride_active.bride_category == '2' %}
+        <td><li>Formanda</li></td>
+        {% endif %}
+        {% if bride_active.bride_category == '3' %}
+        <td><li>Debutante</li></td>
+        {% endif %}
+        {% if bride_active.bride_category == '4' %}
+        <td><li>Independente</li></td>
+        {% endif %}
+
+      <td class="text-right">
+          <a href="{% url 'bride:bride_update' bride_active.pk  %}" class="btn-sm pr-1 text-white btn-secondary" style="background-color: #111111;">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </a>
+
+          <a href="{% url 'bride:bride_delete' bride_active.pk  %}" class="btn-sm ml-1 text-white btn-secondary" style="background-color: #111111;">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+          </a>
+      </td>
+    </tr>
+    <ul>
+    {% empty %}
+        <li><h6>Sem produções inativas, lista de <a class="btn bg-white text-dark" href="{% url 'bride:bride_active_list' %}"><strong> produções ativas.</strong></a></h6></li>
+    </ul>
+  {% endfor %}
+  </tbody>
+    </table>
+
+
+
+
+</div>
+
+{% endblock content %}
+
+{% block javascript %}
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+{% endblock %}
+
+
+{% block stylesheet %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}Equipamento {{ equipment.equipment_tittle }}{% endblock %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="card">
+        <div class="card-header border-0">
+            <div class="row p-2 bg-dark justify-content-between text-white">
+              <div class="col-9 align-self-center">
+                  <h4>Equipamento {{ equipment.equipment_tittle }}</h4>
+              </div>
+              <div class="col-3 align-self-center">
+                  <span class="badge rounded badge-light">
+                      Quantidade:
+                      {{equipment.equipment_quantity}}
+                    </span>
+                   <a href="{% url 'equipment:equipment_list'  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                        <i class="fa fa-undo" aria-hidden="true"></i>
+                   </a>
+              </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-10 col-md-9 p-3">
+                    <div class="row my-3 mx-5">
+                        <p class="text-justify">{{ equipment.get_description_as_markdown }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+{% endblock %}
+{% block stylesheet %}
+
+
+    @media (min-width: 26em) {
+        .card-columns {
+            -webkit-column-count:2;
+            -moz-column-count:2;
+            column-count:2;
+            ⋮
+        }
+        ⋮
+    }
+
+{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}{{ professional.professional_name }}{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-10">
+        <div class="card">
+            <div class="card-header">
+                       <a class="btn text-dark" href="{% url 'custom_user:user_detail' professional.professional_name.username %}">
+                           <div class="row justify-content-center">
+                               <div class="col-fluid m-3">
+                               {% if professional.professional_name.picture %}
+                               <img class="img rounded-circle" style="width: 8rem; height: 8rem" src="{{MEDIA_URL}}{{ professional.professional_name.picture }}" alt="{{ professional.professional_name.picture }}">
+                               {% else %}
+                                    {% if professional.professional_name.socialaccount_set.all.0.get_avatar_url %}
+                                        <img class="img rounded-circle" style="width: 8rem; height: 8rem" src="{{ professional.professional_name.socialaccount_set.all.0.get_avatar_url }}" alt="{{ professional.professional_name.get_full_name }}" width="100" height="100"/>
+                                    {% else %}
+                                        <i class="fa fa-4x fa-user-circle-o" aria-hidden="true"></i>
+                                    {% endif %}
+                                  {% endif %}
+                               </div>
+                               <div class="col-fluid align-self-center ml-3 text-dark">
+                                   <div class="row">
+                                       <h2>{{ professional.professional_name.first_name }}</h2>
+
+                                   {% if request.user.is_staff %}
+                                    <small class="text-white"><span class="badge rounded badge-dark">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>{{professional.professional_views}}
+                                    </span></small>
+                                    {% endif %}
+                                   </div>
+                                   <div class="row">
+
+                                            {% for category in professional.professional_category.all %}
+                                            <div class="row justify-content-center">
+                                                <div class="col-12">
+                                                    <p>{% if forloop.counter > 1 %}, {% endif %} {{ category.category_professional }}</p>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                   </div>
+                               </div>
+                           </div>
+                       </a>
+                        <div class="row justify-content-end pr-3">
+                            <p>Desde {{ professional.professional_start_date }} em nossa equipe!</p>
+                        </div>
+            </div>
+            <div class="card-body">
+                {% if professional.professional_name == user or request.user.is_staff %}
+                    <div class="row my-1 text-white" style="background-color: #000000;">
+                        <h4 class="p-3">Minha Agenda:</h4>
+                    </div>
+                    {% for professional_schedule, time in professional_schedule_list_future%}
+                    <div class="card">
+                    <div class="col-12 m-1">
+
+                      <p>Data: {{professional_schedule.schedule_date}}</p>
+                      <p>Horario: {{professional_schedule.schedule_hour}}</p>
+                      <p>Tempo de serviço: {{ time }}</p>
+                      <p>Serviço: {{professional_schedule.schedule_service.service_tittle}}</p>
+
+                    Cliente:
+                      <div class="col mt-2">
+                        <div class="card border-0">
+                            <a class="btn btn-sm px-4 text-dark border-0" href="{% url 'custom_user:user_detail' professional_schedule.schedule_costumer.username %}">
+                                <div class="row">
+                                <div class="col-2 justify-content-center">
+                                    {% if professional_schedule.schedule_costumer.picture %}
+                                        <img class="img rounded-circle" style="width: 4rem; height: 4rem" src="{{MEDIA_URL}}{{ professional_schedule.schedule_costumer.picture }}" alt="{{ professional_schedule.schedule_costumer.picture }}">
+                                    {% else %}
+                                        {% if professional_schedule.schedule_costumer.socialaccount_set.all.0.get_avatar_url %}
+                                            <img class="img rounded-circle" style="width: 4rem; height: 4rem" src="{{ professional_schedule.schedule_costumer.socialaccount_set.all.0.get_avatar_url }}" alt="{{ professional_schedule.schedule_costumer.get_full_name }}" width="100" height="100"/>
+                                        {% else %}
+                                            <i class="fa fa-3x fa-user-circle-o" aria-hidden="true"></i>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div class="col-flow align-self-center">
+                                <div class="row">{% if professional_schedule.schedule_costumer.first_name %} {{ professional_schedule.schedule_costumer.first_name|title }} {{ professional_schedule.schedule_costumer.last_name|title }}{% else %}{{ professional_schedule.schedule_costumer.username|title }}{% endif %}</div>
+                                </div>
+                                </div>
+
+                            </a>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                    {% endfor %}
+
+
+                {% endif %}
+                {% if request.user.is_staff %}
+                    <div class="row my-1 text-white" style="background-color: #000000;">
+                        <h4 class="p-3">Configurações da minha agenda:</h4>
+                    </div>
+                     {% if schedule_professional_total < 7 %}
+                            <div class="row m-2 justify-content-end">
+                             <a href="{% url 'professional:professional_schedule_create' professional.professional_name.username  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                                 Adicionar horario a agenda do profissional
+                             </a>
+                            </div>
+                     {% endif %}
+
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">Dia da semana</th>
+                      <th scope="col">Inicio</th>
+                      <th scope="col">Fim</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                  {% for schedule_professional in schedule_professional_list %}
+                        <td><li>
+                        {% if schedule_professional.professional_schedule_days == 0 %}
+                        Domingo:
+                        {% endif %}
+                        {% if schedule_professional.professional_schedule_days == 1 %}
+                        Segunda-Feira:
+                        {% endif %}
+                        {% if schedule_professional.professional_schedule_days == 2 %}
+                        Terça-Feira:
+                        {% endif %}
+                        {% if schedule_professional.professional_schedule_days == 3 %}
+                        Quarta-Feira:
+                        {% endif %}
+                        {% if schedule_professional.professional_schedule_days == 4 %}
+                        Quinta-Feira:
+                        {% endif %}
+                        {% if schedule_professional.professional_schedule_days == 5 %}
+                        Sexta-Feira:
+                        {% endif %}
+                        {% if schedule_professional.professional_schedule_days == 6 %}
+                        Sabado:
+                        {% endif %}
+                        </li></td>
+                        <td><li>{{ schedule_professional.professional_schedule_work_start }}</li></td>
+                        <td><li>{{ schedule_professional.professional_schedule_work_end }}</li></td>
+                        <td><li>
+                            <a class="btn-sm mr-1 pr-1 btn-secondary" href="{% url 'professional:professional_schedule_update' schedule_professional.professional_schedule.professional_name.username schedule_professional.pk %}" style="background-color: #111111;">
+                                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                              </a>
+                            <a class="btn-sm btn-secondary" href="{% url 'professional:professional_schedule_delete' schedule_professional.professional_schedule.professional_name.username schedule_professional.pk %}" style="background-color: #111111;">
+                              <i class="fa fa-trash" aria-hidden="true"></i>
+                            </a>
+                        </li></td>
+                    </tr>
+                    <ul>
+                    {% empty %}
+                        <li><h6>Sem Horários cadastrados.</h6></li>
+                    </ul>
+                  {% endfor %}
+                  </tbody>
+                    </table>
+                {% endif %}
+
+                {% for category, photo_service_list in testimony_photo_service_list %}
+                <div class="row my-1 text-white" style="background-color: #000000;">
+                    <h4 class="p-3">Minhas habilidades como {{ category.category_professional }}:</h4>
+                </div>
+                 <div class="container my-3">
+                      <div class="card-columns">
+                        {% for service, photo in photo_service_list %}
+                          <div class="card m-2" style="max-width: 28rem;">
+                              <div class="row rounded-top justify-content-center no-gutters">
+                                  <a href="{% url 'service:service_detail' service.pk  %}" class="img-thumbnail">
+                                   <div class="col-12 mt-2 text-dark">
+                                       {% if photo %}
+                                            <img src="{{MEDIA_URL}}{{photo.service_photo_file}}" class="w-50 mr-3 mb-2 float-left" alt="lunique_{{photo.service_photo_file.name}}">
+                                        {% endif %}
+                                          <h5 class="card-title"><strong>{{service.service_tittle}}</strong></h5>
+                                          <p class="card-text text-justify m-1">{{ service.get_description_as_markdown|truncatewords:35 }}</p>
+                                   </div>
+                                  </a>
+                              </div>
+                              <div class="row no-gutters justify-content-center rounded-bottom" style="background-color: #111111;">
+                                  <div class="col-5 align-self-center">
+                                      <div class="row no-gutters justify-content-center align-items-center">
+                                          {% if request.user.is_staff %}
+                                          <a href="{% url 'service:service_update' service.pk  %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Editar informações serviço">
+                                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                          </a>
+                                          <a href="{% url 'service:service_delete' service.pk  %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Deletar serviço">
+                                              <i class="fa fa-trash" aria-hidden="true"></i>
+                                          </a>
+                                          <a href="{% url 'photo:service_photo_create' service.pk  %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Adicionar foto ao serviço">
+                                              <i class="fa fa-camera" aria-hidden="true"></i>
+                                          </a>
+                                          <small class="text-white"><span class="badge rounded badge-dark">
+                                              <i class="fa fa-eye" aria-hidden="true"></i> {{service.service_views}}
+                                          </span></small>
+                                          {% endif %}
+                                      </div>
+                                  </div>
+                                  <div class="col-6 align-self-center">
+                                      <div class="row align-items-center">
+                                          <div class="col-7 align-self-center">
+                                              {% if request.user.is_staff %}
+                                              {% if service in professional.service_professional_skill.professional_extra_service.all %}
+                                                <form method='post' action="{% url 'professional:professional_extra_skill_add' professional.professional_name.username %}">
+                                                     {% csrf_token %}
+                                                     <input type='hidden' name='professional_extra_service' value={{service.pk}}>
+                                                     <button type='submit' class="btn btn-sm text-success" style="background-color: #111111;"  data-placement="bottom" title="Tirar serviço das habilidades do profissional">
+                                                         <i class="fa fa-flag" aria-hidden="true"></i>
+                                                     </button>
+                                                </form>
+                                              {% else %}
+                                                <form method='post' action="{% url 'professional:professional_not_skill_add' professional.professional_name.username %}">
+                                                     {% csrf_token %}
+                                                     <input type='hidden' name='professional_service_out' value={{service.pk}}>
+                                                     <button type='submit' class="btn btn-sm text-success" style="background-color: #111111;"  data-placement="bottom" title="Tirar serviço das habilidades do profissional">
+                                                         <i class="fa fa-flag" aria-hidden="true"></i>
+                                                     </button>
+                                                </form>
+
+                                              {% endif %}
+                                              {% endif %}
+                                          </div>
+                                          {% for price in service.price_service.all %}
+                                          <div class="col-5 align-self-center">
+                                                {% if request.user.is_staff %}
+                                                    <a href="{% url 'price:price_service_update' price.price_service.pk price.pk %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Editar preço">
+                                                        {% if price.price_value is null %}
+                                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                                            <i class="fa fa-usd" aria-hidden="true"></i>
+                                                        {% else %}
+                                                            {% if price.price_active is False %}
+                                                                <i class="fa fa-usd" aria-hidden="true"></i>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                {% endif %}
+                                                        {% if price.price_active is True %}
+                                                         <div class="row">
+                                                             <p class="card-text text-left"><small class="text-light">{% if service.service_customer_time  is True %} a partir de:{% else %}valor: {% endif %}</small></p>
+                                                         </div>
+                                                         <div class="row text-white">
+                                                             <p class="card-text"><small>R<i class="fa fa-usd" aria-hidden="true"></i></small> {{ price.price_value }}</p>
+                                                         </div>
+                                                        {% endif %}
+                                                {% if request.user.is_staff %}
+                                                    </a>
+                                                {% endif %}
+                                          </div>
+                                         {% endfor %}
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        {% endfor %}
+                      </div>
+                 </div>
+                {% endfor %}
+                {% if photo_extra_service_list %}
+                <div class="row my-1 text-white" style="background-color: #000000;">
+                    <h4 class="p-3">Minhas habilidades extras:</h4>
+                </div>
+                 <div class="container my-3">
+                      <div class="card-columns">
+                        {% for service, photo in photo_extra_service_list %}
+                          <div class="card m-2" style="max-width: 28rem;">
+                              <div class="row rounded-top justify-content-center no-gutters">
+                                  <a href="{% url 'service:service_detail' service.pk  %}" class="img-thumbnail">
+                                   <div class="col-12 mt-2 text-dark">
+                                       {% if photo %}
+                                            <img src="{{MEDIA_URL}}{{photo.service_photo_file}}" class="w-50 mr-3 mb-2 float-left" alt="lunique_{{photo.service_photo_file.name}}">
+                                        {% endif %}
+                                          <h5 class="card-title"><strong>{{service.service_tittle}}</strong></h5>
+                                          <p class="card-text text-justify m-1">{{ service.get_description_as_markdown|truncatewords:35 }}</p>
+                                   </div>
+                                  </a>
+                              </div>
+                              <div class="row no-gutters justify-content-center rounded-bottom" style="background-color: #111111;">
+                                  <div class="col-5 align-self-center">
+                                      <div class="row no-gutters justify-content-center align-items-center">
+                                          {% if request.user.is_staff %}
+                                          <a href="{% url 'service:service_update' service.pk  %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Editar informações serviço">
+                                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                          </a>
+                                          <a href="{% url 'service:service_delete' service.pk  %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Deletar serviço">
+                                              <i class="fa fa-trash" aria-hidden="true"></i>
+                                          </a>
+                                          <a href="{% url 'photo:service_photo_create' service.pk  %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Adicionar foto ao serviço">
+                                              <i class="fa fa-camera" aria-hidden="true"></i>
+                                          </a>
+                                          <small class="text-white"><span class="badge rounded badge-dark">
+                                              <i class="fa fa-eye" aria-hidden="true"></i> {{service.service_views}}
+                                          </span></small>
+                                          {% endif %}
+                                      </div>
+                                  </div>
+                                  <div class="col-6 align-self-center">
+                                      <div class="row align-items-center">
+                                          <div class="col-7 align-self-center">
+                                              {% if request.user.is_staff %}
+                                              {% if service in professional.service_professional_skill.professional_extra_service.all %}
+                                                <form method='post' action="{% url 'professional:professional_extra_skill_add' professional.professional_name.username %}">
+                                                     {% csrf_token %}
+                                                     <input type='hidden' name='professional_extra_service' value={{service.pk}}>
+                                                     <button type='submit' class="btn btn-sm text-success" style="background-color: #111111;"  data-placement="bottom" title="Tirar serviço das habilidades do profissional">
+                                                         <i class="fa fa-flag" aria-hidden="true"></i>
+                                                     </button>
+                                                </form>
+                                              {% else %}
+                                                <form method='post' action="{% url 'professional:professional_not_skill_add' professional.professional_name.username %}">
+                                                     {% csrf_token %}
+                                                     <input type='hidden' name='professional_service_out' value={{service.pk}}>
+                                                     <button type='submit' class="btn btn-sm text-success" style="background-color: #111111;"  data-placement="bottom" title="Tirar serviço das habilidades do profissional">
+                                                         <i class="fa fa-flag" aria-hidden="true"></i>
+                                                     </button>
+                                                </form>
+
+                                              {% endif %}
+                                              {% endif %}
+                                          </div>
+                                          {% for price in service.price_service.all %}
+                                          <div class="col-5 align-self-center">
+                                                {% if request.user.is_staff %}
+                                                    <a href="{% url 'price:price_service_update' price.price_service.pk price.pk %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Editar preço">
+                                                        {% if price.price_value is null %}
+                                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                                            <i class="fa fa-usd" aria-hidden="true"></i>
+                                                        {% else %}
+                                                            {% if price.price_active is False %}
+                                                                <i class="fa fa-usd" aria-hidden="true"></i>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                {% endif %}
+                                                        {% if price.price_active is True %}
+                                                         <div class="row">
+                                                             <p class="card-text text-left"><small class="text-light">{% if service.service_customer_time  is True %} a partir de:{% else %}valor: {% endif %}</small></p>
+                                                         </div>
+                                                         <div class="row text-white">
+                                                             <p class="card-text"><small>R<i class="fa fa-usd" aria-hidden="true"></i></small> {{ price.price_value }}</p>
+                                                         </div>
+                                                        {% endif %}
+                                                {% if request.user.is_staff %}
+                                                    </a>
+                                                {% endif %}
+                                          </div>
+                                         {% endfor %}
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        {% endfor %}
+                      </div>
+                 </div>
+                {% endif %}
+
+                {% if request.user.is_staff and not_work_service_list %}
+
+                <div class="row my-1 text-white" style="background-color: #000000;">
+                    <h4 class="p-3">Serviços que não possuo habilidades:</h4>
+                </div>
+                 <div class="container my-3">
+                      <div class="card-columns">
+                        {% for service in not_work_service_list %}
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row justify-content-between">
+                                    <div class="col-fluid p-2 align-self-center">
+                                      <a href="{% url 'service:service_detail' service.pk  %}" class="btn-white text-dark">
+                                       <h6>{{ service.service_tittle }}</h6>
+                                      </a>
+                                    </div>
+                                    <div class="col-fluid p-2 align-self-center">
+
+                                        {% if service not in professional.service_professional_skill.professional_service_in.all %}
+                                               <form method='post' action="{% url 'professional:professional_extra_skill_add' professional.professional_name.username %}">
+                                                 {% csrf_token %}
+                                                 <input type='hidden' name='professional_extra_service' value={{service.pk}}>
+                                                 <button type='submit' class="btn btn-sm bg-white text-dark" data-placement="bottom" title="Adicionar serviço das habilidades do profissional">
+                                                     <i class="fa fa-flag-o" aria-hidden="true"></i>
+                                                 </button>
+                                                </form>
+                                        {% else %}
+                                                <form method='post' action="{% url 'professional:professional_not_skill_add' professional.professional_name.username %}">
+                                                     {% csrf_token %}
+                                                     <input type='hidden' name='professional_service_out' value={{service.pk}}>
+                                                     <button type='submit' class="btn btn-sm bg-white text-dark" style="background-color: #111111;"  data-placement="bottom" title="Tirar serviço das habilidades do profissional">
+                                                         <i class="fa fa-flag-o" aria-hidden="true"></i>
+                                                     </button>
+                                                </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                        {% endfor %}
+                      </div>
+                 </div>
+                 {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

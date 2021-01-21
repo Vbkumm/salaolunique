@@ -1,0 +1,568 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="L'unique Espaço de Beleza - Florianópolis">
+    <meta property="og:description" content="Um sal&atilde;o de beleza no centro de Florian&oacute;polis, para voc&ecirc; real&ccedil;ar sua beleza com tratamentos diferenciados e t&eacute;cnicas avan&ccedil;adas. Venha conhecer nossos servi&ccedil;os e sinta-se &uacute;nica.">
+    <meta property="og:url" content="https://realcesuabeleza.com.br/">
+    <meta property="og:site_name" content="L'unique Espaço de Beleza">
+    <meta property=og:type content=website>
+    <meta property=og:image content="{% static 'img/logo.jpeg' %}">
+    <meta property="og:locale" content="pt_BR" />
+
+{% endblock %}
+
+{% block stylesheet %}
+
+/*
+    code by Iatek LLC 2018 - CC 2.0 License - Attribution required
+    code customized by Azmind.com
+*/
+@media (min-width: 768px) and (max-width: 991px) {
+    /* Show 4th slide on md if col-md-4*/
+    .carousel-inner .active.col-md-4.carousel-item + .carousel-item + .carousel-item + .carousel-item {
+        position: absolute;
+        top: 0;
+        right: -33.3333%;  /*change this with javascript in the future*/
+        z-index: -1;
+        display: block;
+        visibility: visible;
+    }
+}
+@media (min-width: 576px) and (max-width: 768px) {
+    /* Show 3rd slide on sm if col-sm-6*/
+    .carousel-inner .active.col-sm-6.carousel-item + .carousel-item + .carousel-item {
+        position: absolute;
+        top: 0;
+        right: -50%;  /*change this with javascript in the future*/
+        z-index: -1;
+        display: block;
+        visibility: visible;
+    }
+}
+@media (min-width: 576px) {
+    .carousel-item {
+        margin-right: 0;
+    }
+    /* show 2 items */
+    .carousel-inner .active + .carousel-item {
+        display: block;
+    }
+    .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left),
+    .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item {
+        transition: none;
+    }
+    .carousel-inner .carousel-item-next {
+        position: relative;
+        transform: translate3d(0, 0, 0);
+    }
+    /* left or forward direction */
+    .active.carousel-item-left + .carousel-item-next.carousel-item-left,
+    .carousel-item-next.carousel-item-left + .carousel-item,
+    .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible;
+    }
+    /* farthest right hidden item must be also positioned for animations */
+    .carousel-inner .carousel-item-prev.carousel-item-right {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        display: block;
+        visibility: visible;
+    }
+    /* right or prev direction */
+    .active.carousel-item-right + .carousel-item-prev.carousel-item-right,
+    .carousel-item-prev.carousel-item-right + .carousel-item,
+    .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(100%, 0, 0);
+        visibility: visible;
+        display: block;
+        visibility: visible;
+    }
+}
+/* MD */
+@media (min-width: 768px) {
+    /* show 3rd of 3 item slide */
+    .carousel-inner .active + .carousel-item + .carousel-item {
+        display: block;
+    }
+    .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item + .carousel-item {
+        transition: none;
+    }
+    .carousel-inner .carousel-item-next {
+        position: relative;
+        transform: translate3d(0, 0, 0);
+    }
+    /* left or forward direction */
+    .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible;
+    }
+    /* right or prev direction */
+    .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(100%, 0, 0);
+        visibility: visible;
+        display: block;
+        visibility: visible;
+    }
+}
+/* LG */
+@media (min-width: 991px) {
+    /* show 4th item */
+    .carousel-inner .active + .carousel-item + .carousel-item + .carousel-item {
+        display: block;
+    }
+    .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item + .carousel-item + .carousel-item {
+        transition: none;
+    }
+    /* Show 5th slide on lg if col-lg-3 */
+    .carousel-inner .active.col-lg-3.carousel-item + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
+        position: absolute;
+        top: 0;
+        right: -25%;  /*change this with javascript in the future*/
+        z-index: -1;
+        display: block;
+        visibility: visible;
+    }
+    /* left or forward direction */
+    .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible;
+    }
+    /* right or prev direction //t - previous slide direction last item animation fix */
+    .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(100%, 0, 0);
+        visibility: visible;
+        display: block;
+        visibility: visible;
+    }
+}
+
+
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+
+<!--==========================
+    Carousel
+  ============================-->
+{% if photo_service_list %}
+<div id="content" class="top-content mt-2 mt-sm-4 mt-md-1" style="background-color: #111111;">
+    <div class="container-fluid mt-3" >
+        <div id="carousel-example" class="carousel carousel-example slide" data-ride="carousel">
+
+            <div class="carousel-inner row w-100 mx-auto" role="listbox">
+              {% for photo in photo_service_list %}
+                {% if photo.get_valid_cover_photo is True %}
+                    {% if forloop.first %}
+                    <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 active">
+                        <img src="{{MEDIA_URL}}{{photo.service_photo_file}}" class="img-fluid mx-auto d-block" alt="img{{ forloop.counter }}">
+                                <a href="{% url 'service:service_detail' photo.service_photo.pk  %}" class="btn">
+                                <div class="row py-2 justify-content-center">
+                                        <div class="col-8 text-center">
+                                            <h5 class="card-title text-white">{{ photo.service_photo.service_tittle }}</h5>
+                                        </div>
+
+                                        {% for price in photo.service_photo.price_service.all %}
+
+                                        {% if price.price_value <= price.old_price_value %}
+                                            <div class="col-4 text-center">
+                                            <span class="badge rounded badge-danger"><small><strong class="text-white">Promoção</strong></small></span>
+                                            </div>
+                                        {% endif %}
+                                            {% endfor %}
+
+
+                                </div>
+
+                                </a>
+                    </div>
+                    {% else %}
+                    <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3">
+                        <img src="{{MEDIA_URL}}{{photo.service_photo_file}}" class="img-fluid mx-auto d-block" alt="img{{ forloop.counter }}">
+                                <a href="{% url 'service:service_detail' photo.service_photo.pk  %}" class="btn">
+                                <div class="row py-2 justify-content-center">
+                                        <div class="col-8 text-center">
+                                            <h5 class="card-title text-white">{{ photo.service_photo.service_tittle }}</h5>
+                                        </div>
+
+                                        {% for price in photo.service_photo.price_service.all %}
+
+                                        {% if price.price_value <= price.old_price_value %}
+                                            <div class="col-4 text-center">
+                                            <span class="badge rounded badge-danger"><small><strong class="text-white">Promoção</strong></small></span>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+
+
+                                </div>
+
+                                </a>
+                    </div>
+                    {% endif %}
+
+                {% endif %}
+              {% endfor %}
+
+            </div>
+
+            <a class="carousel-control-prev" href="#carousel-example" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carousel-example" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+<!-- #end Carousel -->
+<!--==========================
+    About
+  ============================-->
+<div id='about' class="container">
+    <div class="row mt-4">
+        <div class="col-12 mt-5">
+            <div class="row">
+                <h1 class="text-left">Um espaço com tratamentos diferenciados. Utilizamos técnicas avançadas e os melhores produtos disponíveis no
+                    mercado para você cuidar da sua beleza.</h1>
+            </div>
+            <div class="row mt-3 text-right justify-content-end">
+                <h4 class="text-white  m-0 p-2" style="background-color: #111111;">
+                    A makeup artist Gabriela Kumm, coordena a equipe do L'unique Espaço de Beleza, desde a sua
+                    inauguração em 2008.</h4>
+                <h4 class="text-white m-0 p-2" style="background-color: #111111;">
+                    E se encantou em proporcionar bem estar e beleza para suas amigas e clientes.
+                </h4>
+                <h4 class="text-white m-0 p-2" style="background-color: #111111;">
+                    Ama o que faz e junto de sua equipe busca estar atenta a todas as novidades do mercado,
+                    sempre frequentando cursos, workshops e congressos nacionais e internacionais.
+                </h4>
+                <h4 class="text-white m-0 p-2" style="background-color: #111111;">
+                    Com excelência no atendimento a noivas e a todas que procuram o seu melhor.
+                </h4>
+                <h4 class="text-white m-0 p-2" style="background-color: #111111;">
+                    Venha nos conhecer e experimente nossos serviços.
+                </h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- #end About -->
+<!--==========================
+    Services
+  ============================-->
+
+<div id='services' class="col-12">
+
+  {% if category_list %}
+    <div class="row mt-4">
+       <div class="col-12 mt-5">
+           <div class="row" style="background-color: #111111;">
+            <h3 class=" pl-5 p-2 py-4 text-white">Nossas categorias de serviços:</h3>
+           </div>
+              <div class="row m-2 mx-lg-5 mt-5 row-cols-1 row-cols-2">
+
+                {% for category, photo in category_list %}
+                  <div class="col mt-2" style="min-width:18rem">
+                      <a href="{% url 'service:service_list' category.pk  %}" class="btn-lg">
+                            <div class="row no-gutters">
+                              <div class="col-md-4">
+                                  {% if photo %}
+                                  <img src="{{MEDIA_URL}}{{photo.service_photo_file}}" class="card-img" alt="lunique_{{photo.service_photo_file.name}}">
+                                  {% endif %}
+                              </div>
+                              <div class="col-md-8">
+                                <div class="card-body">
+                                    <h3 class="card-text p-1" style="color: #111111;">{{ category.category_service }}</h3>
+                                  </div>
+                              </div>
+                            </div>
+                      </a>
+                  </div>
+                {% endfor %}
+              </div>
+
+       </div>
+    </div>
+  {% endif %}
+</div>
+
+<!-- #end Services -->
+
+<!--==========================
+    Combos
+  ============================-->
+<div id="pacotes" class="col-12">
+    {% if combo_list %}
+    <div class="row mt-4">
+        <div class="col-12 mt-5">
+            <div class="row" style="background-color: #111111;">
+                <h3 class="pl-5 p-2 py-4 text-white">Nossos pacotes:</h3>
+            </div>
+               <div class="row m-2 mx-lg-5 mt-5 row-cols-1 row-cols-md-2">
+                {% for combo, photo in combo_list %}
+                   <div class="col mt-4" style="min-width:22rem">
+                          <a class="btn-lg text-dark border-0" href="{% url 'combo:combo_detail' combo.pk %}">
+                              <div class="row no-gutters">
+                                  <div class="col-md-4">
+                                      {% if photo %}
+                                      <img src="{{MEDIA_URL}}{{photo.service_photo_file}}" class="card-img" alt="lunique_{{photo.service_photo_file.name}}">
+                                      {% endif %}
+                                  </div>
+                                  <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h3 class="card-text p-1" style="color: #111111;">{{combo.combo_tittle}}</h3>
+                                    </div>
+                                  </div>
+                              </div>
+                          </a>
+                      </div>
+                   </a>
+                {% endfor %}
+               </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- #end Combos -->
+
+<!--==========================
+    Bride
+  ============================-->
+<div id="producoes" class="col-12">
+    {% if bride_list %}
+    <div class="row mt-4">
+        <div class="col-12 mt-5">
+            <div class="row" style="background-color: #111111;">
+                <h3 class="pl-5 p-2 py-4 text-white">Nossas produções:</h3>
+            </div>
+            <div class="row m-2 mx-lg-5 mt-5 my-4 row-cols-1 row-cols-md-2">
+                {% for bride, testimony in bride_list %}
+                   <div class="col mt-4">
+                          <a class="btn-lg text-dark border-0" href="{% url 'bride:bride_detail' bride.pk %}">
+                              <div class="row no-gutters">
+                                  <div class="col-md-4">
+                                      {% if testimony %}
+                                      <img src="{{MEDIA_URL}}{{testimony.testimony_photo.service_photo_file}}" class="card-img" alt="lunique_{{testimony.testimony_photo.service_photo_file.name}}">
+                                      {% endif %}
+                                  </div>
+                                  <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h3 class="card-text p-1" style="color: #111111;">
+                                            {% if bride.bride_category == '1' %}
+                                            Noiva
+                                            {% endif %}
+                                            {% if bride.bride_category == '2' %}
+                                            Formanda
+                                            {% endif %}
+                                            {% if bride.bride_category == '3' %}
+                                            Debutante
+                                            {% endif %}
+                                            {% if bride.bride_category == '4' %}
+                                            Independente
+                                            {% endif %}
+
+                                            {{bride.bride_name}}
+                                        </h3>
+                                      </div>
+                                  </div>
+                                </div>
+                          </a>
+                      </div>
+                   </a>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- #end Bride -->
+<!--==========================
+    Professional
+  ============================-->
+<div id='professional' class="col-12">
+  {% if professional_list %}
+   <div class="row mt-4">
+       <div class="col-12 mt-5">
+           <div class="row" style="background-color: #111111;">
+                <h3 class="pl-5 p-2 pt-4 text-white">Nossos profissionais:</h3>
+           </div>
+           <div class="row m-2 mx-lg-5 mt-5 mt-4 row-cols-1 row-cols-md-2">
+                   {% for professional in professional_list %}
+                    <div class="col mt-2">
+                        <div class="card border-0">
+                            <a class="btn btn-sm px-4 text-dark border-0" href="{% url 'professional:professional_detail' professional.professional_name.username %}">
+                                <div class="row justify-content-center">
+                                    {% if professional.professional_name.picture %}
+                                        <img class="img rounded-circle" style="width: 4rem; height: 4rem" src="{{MEDIA_URL}}{{ professional.professional_name.picture }}" alt="{{ professional.professional_name.picture }}">
+                                    {% else %}
+                                        {% if professional.professional_name.socialaccount_set.all.0.get_avatar_url %}
+                                            <img class="img rounded-circle" style="width: 4rem; height: 4rem" src="{{ professional.professional_name.socialaccount_set.all.0.get_avatar_url }}" alt="{{ professional.professional_name.get_full_name }}" width="100" height="100"/>
+                                        {% else %}
+                                            <i class="fa fa-3x fa-user-circle-o" aria-hidden="true"></i>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div class="row justify-content-center">{% if professional.professional_name.first_name %} {{ professional.professional_name.first_name|title }} {{ professional.professional_name.last_name|title }}{% else %}{{ professional.professional_name.username|title }}{% endif %}</div>
+                                {% for category in professional.professional_category.all %}
+                                <div class="row justify-content-center text-muted" style="font-size:75%">{{ category.category_professional }}</div>
+                                {% endfor %}
+                            </a>
+                        </div>
+                    </div>
+                   {% endfor %}
+           </div>
+       </div>
+   </div>
+  {% endif %}
+</div>
+
+<!-- #end Professional  -->
+<!--==========================
+    Testimony rating
+  ============================-->
+{% if testimony_list %}
+<div class="row mt-4">
+    <div class="col-12 mt-5">
+        <div class="row" style="background-color: #111111;">
+            <h3 class="pl-5 p-2 pt-4 text-white">Depoimentos:</h3>
+        </div>
+        <div id="content-1" class="top-content my-4">
+            <div class="container-fluid mt-3" >
+                <div id="carousel-example-1" class="carousel carousel-example slide" data-ride="carousel">
+                    <div class="carousel-inner row w-100 mx-auto" role="listbox">
+                      {% for testimony in testimony_list %}
+                        {% if forloop.first %}
+                            <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 active">
+                        {% else %}
+                            <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3">
+                        {% endif %}
+                                <div class="card border-0">
+                                    <div class="row align-items-center" style="min-height:22rem;">
+                                        <a class="text-dark" href="{% url 'service:service_detail' testimony.testimony_service.pk %}">
+                                            <div class="col-12 align-self-center">
+                                                <div class="card-header border-0">
+                                                    <div class="row justify-content-start px-2">
+                                                        <h5><i class="fa fa-quote-left" aria-hidden="true"></i> {{ testimony.testimony_title }} {% if testimony.testimony_description %}</h5>
+                                                        <h6>{{ testimony.get_description_as_markdown|truncatewords:15 }}{% endif %} <i class="fa fa-quote-right" aria-hidden="true"></i>{% if testimony.testimony_description %}</h6>{% else %}</h5>{% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer border-0">
+                                                    <div class="row justify-content-center">
+                                                        <div class="col-fluid pr-2 align-self-center">
+                                                               {% if testimony.testimony_user.picture %}
+                                                               <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ testimony.testimony_user.picture }}" alt="{{ testimony.testimony_user.picture }}">
+                                                               {% else %}
+                                                                    {% if testimony_user.socialaccount_set.all.0.get_avatar_url %}
+                                                                    <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ testimony.testimony_user.socialaccount_set.all.0.get_avatar_url }}" alt="{{ testimony.testimony_user.get_full_name }}" width="100" height="100"/>
+                                                                    {% else %}
+                                                                    <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+                                                                    {% endif %}
+                                                               {% endif %}
+                                                        </div>
+                                                        <div class="col-fluid align-self-center">
+                                                               {% if testimony.testimony_user.first_name %} {{ testimony.testimony_user.first_name|title }} {{ testimony.testimony_user.last_name|title }}{% else %}{{ testimony.testimony_user.username|title }}{% endif %}
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mr-1 my-1 justify-content-end text-warning">
+                                                                <p class="card-text m-0 ">
+                                                                   {% if testimony.testimony_rating == 5 %}
+                                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                                   {% endif %}
+                                                                </p>
+                                                    </div>
+                                                    <div class="row justify-content-center text-white rounded-bottom" style="background-color: #111111;">
+                                                            <div class="col-12">
+                                                                <div class="row pl-2 text-left">
+                                                                    <small class="text-left">Serviço:</small>
+                                                                </div>
+                                                                <div class="row justify-content-center">
+                                                                    <h5>{{ testimony.testimony_service.service_tittle }}</h5>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                      {% endfor %}
+                    </div>
+                    <a class="carousel-control-prev" href="#carousel-example" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carousel-example" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- #end Testimony rating  -->
+{% endblock %}
+{% block javascript %}
+<script>
+    /*
+    Carousel
+*/
+$('.carousel-example').on('slide.bs.carousel', function (e) {
+    /*
+        CC 2.0 License Iatek LLC 2018 - Attribution required
+    */
+    var $e = $(e.relatedTarget);
+    var idx = $e.index();
+    var itemsPerSlide = 5;
+    var totalItems = $('.carousel-item').length;
+
+    if (idx >= totalItems-(itemsPerSlide-1)) {
+        var it = itemsPerSlide - (totalItems - idx);
+        for (var i=0; i<it; i++) {
+            // append slides to end
+            if (e.direction=="left") {
+                $('.carousel-item').eq(i).appendTo('.carousel-inner');
+            }
+            else {
+                $('.carousel-item').eq(0).appendTo('.carousel-inner');
+            }
+        }
+    }
+});
+
+</script>
+
+{% endblock %}

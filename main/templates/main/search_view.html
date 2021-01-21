@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+{% load class_name %}
+ {% block head %}
+    {% endblock %}
+{% block breadcrumb %}
+
+{% endblock %}
+{% block head_title %}Busca: {{ query }}{% endblock %}
+{% block content %}
+<br>
+<div class="container mt-sm-4">
+    <div class="container">
+        <div class="card mb-2">
+         <div class="card-header">
+             <div class="row justify-content-between">
+                 <div class="col-10 align-self-center">
+                    <h3 class='card-text'>{{ count }} resultados para: <b>{{ query }}</b></h3>
+                 </div>
+                 <div class="col-2 align-self-center">
+                     <a href="/" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                       <i class="fa fa-undo" aria-hidden="true"></i>
+                     </a>
+                 </div>
+             </div>
+         </div>
+        </div>
+
+            <div class="card-columns">
+                {% for object in object_list %}
+                    {% with object|class_name as klass %}
+                    {% if klass == 'ServiceModel' %}
+                      <div class="card box-shadow bg-white rounded">
+                  <!-- #configura para imagem
+
+                        {% if object.picture_board %}
+                            {% if object.topics.count == 0 %}
+                                <a href="{% url 'new_topic' object.id %}">
+                                    <img class="card-img-top rounded" src="{{MEDIA_URL}}{{object.picture_board}}" alt="{{ object.picture_board }}">
+                                </a>
+                            {% else %}
+                                <a href="{{ object.get_absolute_url }}">
+                                    <img class="card-img-top rounded" src="{{MEDIA_URL}}{{object.picture_board}}" alt="{{ object.picture_board }}">
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <br><br>
+                        {% endif %}
+
+                    -->
+                         <div class="card-body">
+
+                            <h5 class="card-title"><a href="{{ object.get_absolute_url }}" >{{ object.service_tittle }}</a></h5>
+                        <p class="card-text">{{ object.service_description }}</p>
+
+                        <br>
+                         </div>
+                      </div>
+                    {% else %}
+                    {% endif %}
+                    {% endwith %}
+                {% empty %}
+                <div class='row'>
+                   Nenhum resultado para a pesquisa
+                </div>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+<br>
+
+{% endblock content %}
+
+{% block javascript %}
+
+{% endblock %}

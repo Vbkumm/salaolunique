@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+{% endblock %}
+
+
+{% block stylesheet %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}Valor: {{ schedule.schedule_service }}{% endblock %}
+
+{% block content %}
+<br>
+<div class="container-fluid mt-1">
+
+
+  <div class="d-md-flex px-sm-3">
+      <div class="col-md-3 text-danger">
+          <h1>serviço: {{ schedule.schedule_service }}</h1>
+
+      </div>
+  </div>
+</div>
+
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

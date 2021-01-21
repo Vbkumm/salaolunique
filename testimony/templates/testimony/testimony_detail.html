@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block head %}
+{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}
+
+{% for service in service_list %}
+              {{ service.service_tittle }}
+{% endfor %}
+
+{% endblock %}
+
+{% block content %}
+<br xmlns="http://www.w3.org/1999/html">
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-10">
+      <div class="card">
+              {% for service in service_list %}
+              <h6>{{ service.service_tittle }}</h6>
+                {% endfor %}
+
+              <h3>{{ testimony.testimony_title }}</h3>
+                <p>{{ testimony.testimony_description }}</p>
+
+              <h5>Profissionais que realizam o serviço:</h5>
+              {% for professional in professional_list %}
+              <div class="col-2">
+                   <ul class="navbar-nav mr-2 ml-auto">
+                              <li class="nav-item">
+                              <a class="btn btn-sm px-4 text-dark border-0" href="{% url 'professional:professional_detail' professional.professional_name.username %}">
+                                  <div class="row justify-content-center">
+                                      {% if professional.professional_name.picture %}
+                                        <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ professional.professional_name.picture }}" alt="{{ professional.professional_name.picture }}">
+                                      {% else %}
+                                        {% if professional.professional_name.socialaccount_set.all.0.get_avatar_url %}
+                                            <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ professional.professional_name.socialaccount_set.all.0.get_avatar_url }}" alt="{{ professional.professional_name.get_full_name }}" width="100" height="100"/>
+                                        {% else %}
+                                            <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+                                        {% endif %}
+                                      {% endif %}
+                                  </div>
+                                  <div class="row justify-content-center">{% if professional.professional_name.first_name %} {{ professional.professional_name.first_name }} {{ professional.professional_name.last_name }}{% else %}{{ professional.professional_name.username }}{% endif %}</div>
+                              </a>
+                              </li>
+                          </ul>
+                  </div>
+
+                {% endfor %}
+
+
+              {{ testimony.testimony_bride }}
+              {{ testimony.testimony_photo }}
+
+
+              {% if testimony.testimony_rating %}
+                <p class="card-text text-warning">
+                    {% if testimony.testimony_rating == '1' %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                    {% if testimony.testimony_rating == '2' %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                    {% if testimony.testimony_rating == '3' %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                    {% if testimony.testimony_rating == '4' %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                    {% if testimony.testimony_rating == '5' %}
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                </p>
+          {% endif %}
+
+
+
+
+              <h6>Enviado por:</h6>
+               {% if testimony.testimony_user.username %}
+
+              <div class="col-2">
+                   <ul class="navbar-nav mr-2 ml-auto">
+                              <li class="nav-item">
+                              <a class="btn btn-sm px-4 text-dark border-0" href="{% url 'profile' testimony.testimony_user.username %}">
+                                  <div class="row justify-content-center">
+                                      {% if testimony.testimony_user.picture %}
+                                        <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{MEDIA_URL}}{{ testimony.testimony_user.picture }}" alt="{{ testimony.testimony_user.picture }}">
+                                      {% else %}
+                                        {% if testimony.testimony_user.socialaccount_set.all.0.get_avatar_url %}
+                                            <img class="img rounded-circle" style="width: 2rem; height: 2rem" src="{{ testimony.testimony_user.socialaccount_set.all.0.get_avatar_url }}" alt="{{ testimony.testimony_user.get_full_name }}" width="100" height="100"/>
+                                        {% else %}
+                                            <i class="fa fa-2x fa-user-circle-o" aria-hidden="true"></i>
+                                        {% endif %}
+                                      {% endif %}
+                                  </div>
+                                  <div class="row justify-content-center">{% if testimony.testimony_user.first_name %} {{ testimony.testimony_user.first_name }} {{ testimony.testimony_user.last_name }}{% else %}{{ testimony.testimony_user.username }}{% endif %}</div>
+                              </a>
+                              </li>
+                          </ul>
+                  </div>
+
+               {% endif %}
+                <p>Há: {{ testimony.testimony_published|naturaltime }}</p>
+          <div class="btn-sm m-2 justify-content-end ml-auto">
+             <a href="{% url 'testimony:testimony_update' testimony.pk  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                  <i class="fa fa-2x fa-edit" aria-hidden="true"></i>
+              </a>
+               {% for service in testimony.testimony_services.all %}
+                {% if forloop.counter == 1 %}
+              <a href="{% url 'service:service_detail' service.pk  %}" class="btn-sm text-white btn-secondary" style="background-color: #111111;">
+                  <i class="fa fa-undo" aria-hidden="true"></i>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+          </div>
+
+
+          </div>
+
+        </div>
+  </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

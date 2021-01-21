@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block head_title %}{{ combo.combo_tittle }}{% endblock %}
+{% block head %}
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ combo.combo_tittle }}">
+<meta property="og:description" content="{{ combo.get_description_as_markdown }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="L'unique Espaço de Beleza">
+<meta property=og:image content="{% for service, photo, price, quantity, price_combo_original in service_list%}
+                                        <img class='img-thumbnail' src='{{MEDIA_URL}}{{ photo.service_photo_file }}' alt='lunique_{{ photo.service_photo_file.name }}'>
+                                    {% endfor %}">
+<meta property="og:locale" content="pt_BR" />
+
+{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block content %}
+<br><br>
+<!--==========================
+    Prime Service Card
+  ============================-->
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="row bg-dark py-4 justify-content-between text-white">
+                <div class="col-7 align-self-center">
+                    <h2 class="bg-dark text-white">Pacote - {{ combo.combo_tittle }}
+                    {% if request.user.is_staff %}
+                    <small class="text-white"><span class="badge rounded badge-light">
+                        <i class="fa fa-eye" aria-hidden="true"></i>{{combo.combo_views}}
+                    </span></small>
+                    {% endif %}
+                    </h2>
+                </div>
+                <div class="col-1 pt-1 align-self-start">
+                {% if request.user.is_staff %}
+
+                     <a href="{% url 'combo:combo_update' combo.pk %}" class="btn-sm pr-1 btn-dark" data-toggle="tooltip" data-placement="bottom" title="Editar titulo e detalhes do pacote">
+                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                     </a>
+                {% endif %}
+                </div>
+
+                {% for price in combo.price_combo.all %}
+                <div class="col-4 align-self-start">
+                    <div class="row no-gutters">
+                        <div class="col-5 text-right align-self-center">
+                        {% if price.price_value <= price.old_price_value %}
+                             <h4><span class="badge rounded badge-danger"><strong>Promoção</strong></span></h4>
+                        {% endif %}
+                        </div>
+                        {% if request.user.is_staff %}
+                        <a href="{% url 'price:price_combo_update' price.price_combo.pk price.pk %}" class="btn btn-dark" data-toggle="tooltip" data-placement="bottom" title="Editar preço">
+                        {% endif %}
+                            <div class="col-5 ml-1 text-center text-white">
+                            {% if price.price_active is True %}
+                                <div class="row">
+                                        {% if service.service_customer_time  is True %}
+                                        <small>a partir de</small>
+                                        {% endif %}
+                                </div>
+                                 <div class="row">
+                                        <h6 class="text-white"><small>R<i class="fa fa-usd" aria-hidden="true"></i></small> {{ price.price_value }}</h6>
+                                </div>
+                            {% else %}
+                                {% if request.user.is_staff %}
+                                    {% if price.price_value is null %}
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        <i class="fa fa-usd" aria-hidden="true"></i>
+                                    {% else %}
+                                        <i class="fa fa-usd" aria-hidden="true"></i>
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                            </div>
+                        {% if request.user.is_staff %}
+                        </a>
+                        {% endif %}
+                        <div class="col-1">
+                            <div class="dropdown">
+                              <button type="button" class="btn btn-sm bg-dark text-white" data-toggle="dropdown" data-placement="bottom" title="Compartilhar nas rede sociais">
+                                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-right text-center">
+                                  <div class="row ml-1 align-items-center">
+                                      <div class="col-3 align-self-center">
+                                        <a class="btn text-dark" href="http://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target=_blank data-toggle="tooltip" data-placement="bottom" title="Compartilhar pacote no facebook">
+                                            <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                                        </a>
+                                      </div>
+                                      <div class="col-3 align-self-center">
+                                        <a class="btn text-dark" href="whatsapp://send?text={{ request.build_absolute_uri }}" data-action="share/whatsapp/share" target=_blank data-toggle="tooltip" data-placement="bottom" title="Compartilhar pacote no whatsapp">
+                                            <i class="fa fa-whatsapp" aria-hidden="true"></i>
+                                        </a>
+                                      </div>
+                                      <div class="col-3 pl-1 align-self-center">
+                                        <button class="dropdown-item btn copy"  data-toggle="tooltip" data-placement="bottom" title="Copiar link para área de transferência">
+                                            <i class="fa fa-clipboard" aria-hidden="true"></i>
+                                        </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 align-self-start p-3">
+                    <div class="row my-3 mx-5">
+                    <p class="text-justify">{{ combo.get_description_as_markdown }}</p>
+                    </div>
+                        {% for service, photo, price, quantity, price_combo_original in service_list%}
+                            <a href="{% url 'service:service_detail' service.combo_service.pk %}" class="text-dark">
+                                <div class="row my-2 no-gutters">
+                                    <div class="col-md-4">
+                                        <div class="card" style="width: 7rem;">
+                                        {% if photo %}
+                                        <img class="card-img w-100" src="{{MEDIA_URL}}{{ photo.service_photo_file }}" alt="lunique_{{ photo.service_photo_file.name }}">
+                                         {% if request.user.is_staff %}
+                                        <div class="card-img-overlay d-flex align-items-end flex-column">
+                                            <small class="text-white mt-auto"><span class="badge badge-light">
+                                                <i class="fa fa-eye" aria-hidden="true"></i> {{photo.testimony_photo.photo_views}}
+                                            </span></small>
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h3 class="card-text p-1 text-dark"><span class="badge badge-dark">{{ quantity }}</span> x {{ service.combo_service.service_tittle }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+
+                </div>
+
+                <div class="col-md-6 align-self-center p-3">
+                    <div class="row justify-content-end">
+                        <div class="col-12 align-self-center text-left">
+                            <h3>Neste pacote você tem uma economia de: {{ discount|floatformat:1 }}<small>%</small></h3>
+                        </div>
+                    </div>
+                    {% if request.user.is_staff %}
+                    <div class="row justify-content-start">
+
+                        <a href="{% url 'combo:combo_service_create' combo.pk %}" class="btn ins-ic p-1 btn-secondary" title="Adicione uma nova categoria de profissional!" data-toggle="tooltip" data-placement="right">
+                            <div class="col">
+                                <i class="fa fa-plus fa-1x" aria-hidden="true"></i>
+                                Adicionar serviço ao pacote
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if service_list %}
+                    <div class="row">
+                    <table class="table">
+                      <thead class="thead-dark">
+                        <tr>
+                            <th scope="col"></th>
+                          <th scope="col">Serviço</th>
+                          <th scope="col">QTD</th>
+                          <th scope="col">Valor unitario</th>
+                          <th scope="col">Valor total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                            {% for service, photo, price, quantity, price_combo_original in service_list%}
+
+                            <td><li>
+                                {% if request.user.is_staff %}
+                                <div class="dropdown dropup">
+                                  <button type="button" class="btn bg-white text-dark" data-toggle="dropdown">
+                                      <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                  </button>
+                                  <div class="dropdown-menu dropdown-menu-right text-center">
+                                    <a href="{% url 'combo:combo_service_update' service.combo_service_quantity.pk service.pk %}" class="btn-sm pr-1 btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Editar serviço e quantidades no pacote">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    </a>
+                                     <a href="{% url 'combo:combo_service_delete' service.combo_service_quantity.pk service.pk %}" class="btn-sm mx-1 btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Deletar serviço do pacote">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                  </div>
+                                </div>
+                                {% endif %}
+                            </li></td>
+
+                            <td><li>
+                                <a href="{% url 'service:service_detail' service.combo_service.pk %}" class="text-dark">
+                                {{ service.combo_service.service_tittle }}
+                                </a>
+                            </li></td>
+                            <td class="text-center"><li> {{ quantity }}</li></td>
+                            <td class="text-center"><li>
+                                {% if price.price_value == None %}
+                                    {% if request.user.is_staff %}
+                                    <a href="{% url 'price:price_service_update' service.combo_service.pk price.pk %}" class="btn-sm pr-1 btn-secondary">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    </a>
+                                    {% endif %}
+                                {% else %}
+                                <small>R<i class="fa fa-usd" aria-hidden="true"></i></small> {{ price.price_value }}
+                                {% endif %}
+                            </li></td>
+                            <td class="text-center"><li> <small>R<i class="fa fa-usd" aria-hidden="true"></i></small> {{price_combo_original}}</li></td>
+                            </tr>
+                            <ul>
+                            {% empty %}
+                                <li><h6>Sem serviços no pacote, adicione um <a class="btn bg-white text-dark" href="{% url 'combo:combo_service_create' combo.pk %}"><strong> novo serviços</strong></a></h6></li>
+                            </ul>
+                            {% endfor %}
+                      </tbody>
+                    </table>
+                    </div>
+                    <div class="row justify-content-end">
+                        <div class="col-6 align-self-center text-left">
+                            <h4>Total dos serviços fora do pacote:</h4>
+                        </div>
+                        <div class="col-6 align-self-center text-right">
+                            <h6><small>R<i class="fa fa-usd" aria-hidden="true"></i></small> {{total_combo_price_value}}</h6>
+                        </div>
+
+                    </div>
+                    {% endif %}
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+    <!-- #end prime card  -->
+</div>
+
+
+
+{% endblock %}
+{% block javascript %}
+    <script>
+
+   var copyCode = new ClipboardJS('.copy', {
+       text: function(trigger) {
+           return document.location.href;
+       }
+   });
+
+    copyCode.on('success', function(event) {
+        event.clearSelection()
+        alert ("Link copiado para área de transferência");
+
+    });
+
+
+</script>
+
+
+<script language="javascript">
+    function fbshareCurrentPage()
+    {window.open("https://www.facebook.com/sharer/sharer.php?u="+escape(window.location.href)+"&t="+document.title, '',
+    'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+    return false; }
+</script>
+{% endblock %}

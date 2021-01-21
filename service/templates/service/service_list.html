@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block head %}
+{% endblock %}
+{% block stylesheet %}
+
+
+    @media (min-width: 26em) {
+        .card-columns {
+            -webkit-column-count:2;
+            -moz-column-count:2;
+            column-count:2;
+            ⋮
+        }
+        ⋮
+    }
+
+{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block head_title %}
+{% for service in service_list %}
+    {% if forloop.counter == 1 %}
+             {{ service.service_category.category_service }}
+    {% endif %}
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+<br>
+<div  class="row">
+   <div class="col-12 align-self-center">
+
+       {% with service=service_list.first %}
+           <div class="row bg-dark justify-content-center">
+               <div class="col-8 align-self-center">
+                    <h3 class="p-2 text-white">Nossos serviços de {{ service.service_category.category_service}}:</h3>
+               </div>
+               <div class="col-2 text-right align-self-center">
+                   <a href="/" class="btn-sm text-white btn-dark" data-toggle="tooltip" data-placement="bottom" title="Voltar para pagina principal">
+                       <i class="fa fa-undo" aria-hidden="true"></i>
+                   </a>
+               </div>
+           </div>
+
+       {% endwith %}
+        <div class="container">
+          <div class="card-columns">
+            {% for service, photo in testimony_photo_service_list %}
+              <div class="card m-2" style="max-width: 28rem;">
+                  <div class="row rounded-top justify-content-center no-gutters">
+                      <a href="{% url 'service:service_detail' service.pk  %}" class="img-thumbnail">
+                       <div class="col-12 mt-2 text-dark">
+                           {% if photo %}
+                                <img src="{{MEDIA_URL}}{{photo.service_photo_file}}" class="w-50 mr-3 mb-2 float-left" alt="lunique_{{photo.service_photo_file.name}}">
+                            {% endif %}
+                              <h5 class="card-title"><strong>{{service.service_tittle}}</strong></h5>
+                              <p class="card-text text-justify m-1">{{ service.get_description_as_markdown|truncatewords:35 }}</p>
+                       </div>
+                      </a>
+                  </div>
+                  <div class="row no-gutters justify-content-center rounded-bottom" style="background-color: #111111;">
+                      <div class="col-5 align-self-center">
+                          <div class="row">
+                              <div class="col-12">
+                                  <div class="row no-gutters justify-content-center align-items-center">
+                                      {% if request.user.is_staff %}
+                                      <a href="{% url 'service:service_update' service.pk  %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Editar informações serviço">
+                                          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                      </a>
+                                      <a href="{% url 'service:service_delete' service.pk  %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Deletar serviço">
+                                          <i class="fa fa-trash" aria-hidden="true"></i>
+                                      </a>
+                                      <a href="{% url 'photo:service_photo_create' service.pk  %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Adicionar foto ao serviço">
+                                          <i class="fa fa-camera" aria-hidden="true"></i>
+                                      </a>
+                                      <small class="text-white"><span class="badge rounded badge-dark">
+                                          <i class="fa fa-eye" aria-hidden="true"></i> {{service.service_views}}
+                                      </span></small>
+                                      {% endif %}
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row m-2 justify-content-center">
+                              <a href="{% url 'service:schedule_wizard_create' service.pk  %}" class="btn text-white bg-danger" style="background-color: #111111;">
+                                 Agende aqui!
+                             </a>
+                          </div>
+                      </div>
+                      <div class="col-6 align-self-center">
+                          <div class="row align-items-center">
+                              <div class="col-7 align-self-center">
+                             {% for price in service.price_service.all %}
+                                  {% if price.price_value <= price.old_price_value %}
+                                  <p class="card-text text-right"><small class="text-danger"><strong>Promoção</strong></small></p>
+                                  {% endif %}
+                              </div>
+                              <div class="col-5 align-self-center">
+                                    {% if request.user.is_staff %}
+                                        <a href="{% url 'price:price_service_update' price.price_service.pk price.pk %}" class="btn-sm text-white" style="background-color: #111111;" data-toggle="tooltip" data-placement="bottom" title="Editar preço">
+                                            {% if price.price_value is null %}
+                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                                <i class="fa fa-usd" aria-hidden="true"></i>
+                                            {% else %}
+                                                {% if price.price_active is False %}
+                                                    <i class="fa fa-usd" aria-hidden="true"></i>
+                                                {% endif %}
+                                            {% endif %}
+                                    {% endif %}
+                                            {% if price.price_active is True %}
+                                             <div class="row">
+                                                 <p class="card-text text-left"><small class="text-light">{% if service.service_customer_time  is True %} a partir de:{% else %}valor: {% endif %}</small></p>
+                                             </div>
+                                             <div class="row text-white">
+                                                 <p class="card-text"><small>R<i class="fa fa-usd" aria-hidden="true"></i></small> {{ price.price_value }}</p>
+                                             </div>
+                                            {% endif %}
+                                    {% if request.user.is_staff %}
+                                        </a>
+                                    {% endif %}
+                              </div>
+                             {% endfor %}
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            {% endfor %}
+          </div>
+          </div>
+       </div>
+
+</div>
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+{{ wizard.form.media }}
+{% endblock %}
+
+{% block head_title %}Novo Serviçø{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-10">
+      <div class="card">
+            <div class="card-header">
+                <h4>Novo  serviço</h4>
+                <p>Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</p>
+            </div>
+            <div class="card-body">
+                <form action="" method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                <table>
+                {{ wizard.management_form }}
+                {% if wizard.form.forms %}
+                    {{ wizard.form.management_form }}
+                    {% for form in wizard.form.forms %}
+                        {{ form|crispy }}
+                    {% endfor %}
+                {% else %}
+                {% include 'includes/form.html' %}
+                    {% endif %}
+                </table>
+
+                     {% if wizard.steps.step1 == 1 %}
+                        <a href="{% url 'service:service_category_create' %}" class="btn ins-ic p-1 btn-secondary" title="Adicione uma nova categoria de serviçø!" data-toggle="tooltip" data-placement="right">
+                            <div class="col">
+                                 <i class="fa fa-plus fa-1x" aria-hidden="true"></i>
+                                 Categoria de serviço
+                            </div>
+                        </a>
+                    {% endif %}
+
+                  {% if wizard.steps.prev %}
+                <button name="wizard_goto_step" type="submit" class="btn btn-secondary" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+                {% endif %}
+                <input type="submit" class="btn btn-dark float-right" value="{% trans 'submit' %}"/>
+                </form>
+            </div>
+      </div>
+    </div>
+</div>
+
+{% endblock %}
