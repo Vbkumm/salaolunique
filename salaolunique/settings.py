@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from decouple import config, Csv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,18 +21,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '6y3^t%$k&#19fsfe1#(vi@7f*zer14fc2ae=)w(!ld-t5e-wy-'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 SITE_ID = 1
 
 # Application definition
 
-INSTALLED_APPS = [
+DEFAULT_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,16 +41,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-
     'django.contrib.humanize',
     'django.contrib.gis',
     'django_cleanup.apps.CleanupConfig',
 
+]
+
+THIRD_PARTY_APPS = [
     'bootstrap4',
     'widget_tweaks',
     'crispy_forms',
     'formtools',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
 
+]
+
+LOCAL_APPS = [
     'lib',
     'bride',
     'combo',
@@ -61,14 +73,9 @@ INSTALLED_APPS = [
     'schedule',
     'service',
     'testimony',
-
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
-
 ]
+
+INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DEFAULT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -201,12 +208,12 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 #facebook
-SOCIAL_AUTH_FACEBOOK_KEY = '555182105436904'  # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET ='a60aaf805bf3f28e908eaf2384180d6b' #app key
+SOCIAL_AUTH_FACEBOOK_KEY = config('SOCIAL_AUTH_FACEBOOK_KEY')  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = config('SOCIAL_AUTH_FACEBOOK_SECRET') #app key
 
 #google
-SOCIAL_AUTH_GOOGLE_KEY = '999004428809-lg8hhj7i18n5kfu6etqe4slssvgpidna.apps.googleusercontent.com'  # App ID
-SOCIAL_AUTH_GOOGLE_SECRET ='9zPjlGB9XPfA1bgV_wRUqyhe' #app key
+SOCIAL_AUTH_GOOGLE_KEY = config('SOCIAL_AUTH_GOOGLE_KEY')  # App ID
+SOCIAL_AUTH_GOOGLE_SECRET = config('SOCIAL_AUTH_GOOGLE_SECRET') #app key
 
 
 # Internationalization
@@ -243,9 +250,10 @@ LOGIN_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'taxi0621@gmail.com'
-EMAIL_HOST_PASSWORD = '021283vbk'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.espacolunique.com.br'
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = 'contato@espacolunique.com.br'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
